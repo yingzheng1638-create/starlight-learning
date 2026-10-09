@@ -2148,6 +2148,14 @@ body {
           </div>
           <div class="settings-item-arrow">›</div>
         </div>
+        <div class="settings-item" onclick="showLanguageSettings()">
+          <div class="settings-item-icon">🌐</div>
+          <div class="settings-item-content">
+            <div class="settings-item-label">知识图谱语言</div>
+            <div class="settings-item-value" id="languageName">中文</div>
+          </div>
+          <div class="settings-item-arrow">›</div>
+        </div>
       </div>
 
       <div class="settings-group">
@@ -2824,10 +2832,10 @@ function renderTodayRecommendations() {
           ${subjectEmojis[topic.subject] || '📚'}
         </div>
         <div class="today-item-content">
-          <div class="today-item-title">${index + 1}. ${topic.name}</div>
-          <div class="today-item-desc">${topic.description}</div>
+          <div class="today-item-title">${index + 1}. ${getTopicName(topic)}</div>
+          <div class="today-item-desc">${getTopicDesc(topic)}</div>
           <div class="today-item-meta">
-            <span class="subject-tag" style="background: ${subjectColors[topic.subject]}">${topic.subject}</span>
+            <span class="subject-tag" style="background: ${subjectColors[topic.subject]}">${getSubjectName(topic.subject)}</span>
             <span class="age-tag">${topic.ageRangeStart}-${topic.ageRangeEnd}岁</span>
           </div>
         </div>
@@ -2842,7 +2850,7 @@ function renderSubjectChips() {
   const container = document.getElementById('subjectChips');
   container.innerHTML = `
     <div class="filter-chip active" data-subject="">全部学科</div>
-    ${subjects.map(s => `<div class="filter-chip" data-subject="${s}">${subjectEmojis[s] || '📚'} ${s}</div>`).join('')}
+    ${subjects.map(s => `<div class="filter-chip" data-subject="${s}">${subjectEmojis[s] || '📚'} ${getSubjectName(s)}</div>`).join('')}
   `;
   
   // 绑定事件
@@ -2878,8 +2886,8 @@ function getFilteredTopics() {
   const ageRange = ageChip ? ageChip.dataset.age : '';
 
   return topicsData.filter(topic => {
-    if (search && !topic.name.toLowerCase().includes(search) && 
-        !topic.description.toLowerCase().includes(search)) return false;
+    if (search && !getTopicName(topic).toLowerCase().includes(search) && 
+        !getTopicDesc(topic).toLowerCase().includes(search)) return false;
     if (subject && topic.subject !== subject) return false;
     if (ageRange) {
       if (ageRange === '12+') {
@@ -2918,10 +2926,10 @@ function loadTopics() {
     return `
       <div class="topic-card ${learned ? 'learned' : ''}" onclick="openTopicDetail('${topic.id}')">
         <div class="topic-card-header">
-          <div class="topic-card-title">${topic.name}</div>
-          <span class="subject-tag" style="background: ${subjectColors[topic.subject]}; font-size: 11px;">${topic.subject}</span>
+          <div class="topic-card-title">${getTopicName(topic)}</div>
+          <span class="subject-tag" style="background: ${subjectColors[topic.subject]}; font-size: 11px;">${getSubjectName(topic.subject)}</span>
         </div>
-        <div class="topic-card-desc">${topic.description}</div>
+        <div class="topic-card-desc">${getTopicDesc(topic)}</div>
         <div class="topic-card-footer">
           <div class="topic-card-tags">
             <span class="badge badge-amber">${topic.ageRangeStart}-${topic.ageRangeEnd}岁</span>
@@ -2965,20 +2973,20 @@ function openTopicDetail(topicId) {
   const topic = topicsData.find(t => t.id === topicId);
   if (!topic) return;
 
-  document.getElementById('modalTopicName').textContent = topic.name;
+  document.getElementById('modalTopicName').textContent = getTopicName(topic);
   
   const tagsContainer = document.getElementById('modalTopicTags');
   tagsContainer.innerHTML = `
-    <span class="subject-tag" style="background: ${subjectColors[topic.subject]}">${subjectEmojis[topic.subject] || ''} ${topic.subject}</span>
+    <span class="subject-tag" style="background: ${subjectColors[topic.subject]}">${subjectEmojis[topic.subject] || ''} ${getSubjectName(topic.subject)}</span>
     <span class="badge badge-amber">${topic.ageRangeStart}-${topic.ageRangeEnd}岁</span>
     ${isTopicLearned(topicId) ? '<span class="badge badge-green">✓ 已掌握</span>' : ''}
   `;
 
-  document.getElementById('modalTopicDesc').textContent = topic.description;
+  document.getElementById('modalTopicDesc').textContent = getTopicDesc(topic);
 
   // 掌握标准
   const evidenceList = document.getElementById('modalEvidence');
-  evidenceList.innerHTML = topic.evidence.map(e => `<li>${e}</li>`).join('');
+  evidenceList.innerHTML = getTopicEvidence(topic).map(e => `<li>${e}</li>`).join('');
 
   // 前置知识
   const prereqs = depsData.filter(d => d.topicId === topicId);
@@ -2991,8 +2999,7 @@ function openTopicDetail(topicId) {
       if (!prereqTopic) return '';
       const learned = isTopicLearned(p.prerequisiteId);
       return `<div class="prereq-item ${learned ? 'learned' : ''}" onclick="openTopicDetail('${p.prerequisiteId}')">
-        ${prereqTopic.name}
-        <div style="font-size: 11px; color: var(--text-tertiary); margin-left: auto;">${p.reason}</div>
+        ${getTopicName(prereqTopic)}
       </div>`;
     }).join('');
   }
@@ -3008,7 +3015,7 @@ function openTopicDetail(topicId) {
       if (!unlockTopic) return '';
       const learned = isTopicLearned(u.topicId);
       return `<div class="prereq-item ${learned ? 'learned' : ''}" onclick="openTopicDetail('${u.topicId}')">
-        ${unlockTopic.name}
+        ${getTopicName(unlockTopic)}
       </div>`;
     }).join('');
   }
@@ -3064,7 +3071,7 @@ function toggleLearned() {
     // 添加动态
     data.activities.unshift({
       type: 'learn',
-      text: `掌握了「${topic.name}」`,
+      text: `掌握了「${getTopicName(topic)}」`,
       icon: '✨',
       time: new Date().toISOString()
     });
@@ -3189,7 +3196,7 @@ function searchRelatedTopics(query) {
   const keywords = query.toLowerCase().split(/\s+/);
   return topicsData
     .filter(topic => {
-      const text = (topic.name + ' ' + topic.description).toLowerCase();
+      const text = (getTopicName(topic) + ' ' + getTopicDesc(topic)).toLowerCase();
       return keywords.some(kw => text.includes(kw));
     })
     .sort((a, b) => b.centrality - a.centrality)
@@ -3201,11 +3208,11 @@ function buildContext(topics) {
   return topics.map(t => {
     const prereqs = depsData.filter(d => d.topicId === t.id).slice(0, 2).map(d => {
       const pTopic = topicsData.find(pt => pt.id === d.prerequisiteId);
-      return pTopic ? `- 前置：${pTopic.name}` : '';
+      return pTopic ? `- 前置：${getTopicName(pTopic)}` : '';
     }).filter(Boolean).join('\n');
-    return `【${t.name}】
-  学科：${t.subject}
-  简介：${t.description}
+    return `【${getTopicName(t)}】
+  学科：${getSubjectName(t.subject)}
+  简介：${getTopicDesc(t)}
 ${prereqs}`;
   }).join('\n\n');
 }
@@ -3248,7 +3255,7 @@ function askAIAboutTopic() {
   navigateTo('chat');
   
   setTimeout(() => {
-    document.getElementById('chatInput').value = `请给我讲一讲「${topic.name}」，用我能听懂的话`;
+    document.getElementById('chatInput').value = `请给我讲一讲「${getTopicName(topic)}」，用我能听懂的话`;
     sendMessage();
   }, 300);
 }
@@ -3310,10 +3317,10 @@ function renderProgressPage() {
     recentContainer.innerHTML = recent.map(topic => `
       <div class="topic-card learned" onclick="openTopicDetail('${topic.id}')">
         <div class="topic-card-header">
-          <div class="topic-card-title">${topic.name}</div>
-          <span class="subject-tag" style="background: ${subjectColors[topic.subject]}; font-size: 11px;">${topic.subject}</span>
+          <div class="topic-card-title">${getTopicName(topic)}</div>
+          <span class="subject-tag" style="background: ${subjectColors[topic.subject]}; font-size: 11px;">${getSubjectName(topic.subject)}</span>
         </div>
-        <div class="topic-card-desc">${topic.description.substring(0, 60)}...</div>
+        <div class="topic-card-desc">${getTopicDesc(topic).substring(0, 60)}...</div>
       </div>
     `).join('');
   }
@@ -3330,6 +3337,41 @@ function updateSettingsDisplay() {
     'doubao-lite-4k': '豆包 Lite 4K'
   };
   document.getElementById('modelName').textContent = modelNames[settings.model] || settings.model;
+  document.getElementById('languageName').textContent = settings.language === 'zh' ? '中文' : 'English';
+}
+
+function showLanguageSettings() {
+  const settings = getSettings();
+  document.getElementById('settingsModalTitle').textContent = '知识图谱语言';
+  document.getElementById('settingsModalBody').innerHTML = `
+    <div class="form-group">
+      <label class="form-label">选择语言</label>
+      <select class="form-select" id="languageSelect">
+        <option value="zh" ${settings.language === 'zh' ? 'selected' : ''}>简体中文</option>
+        <option value="en" ${settings.language === 'en' ? 'selected' : ''}>English (原文)</option>
+      </select>
+      <div class="form-hint">中文需要先翻译数据，未翻译时显示英文</div>
+    </div>
+    <button class="btn btn-primary" style="width: 100%; padding: 14px;" onclick="saveLanguage()">保存</button>
+  `;
+  document.getElementById('settingsModal').classList.add('active');
+}
+
+function saveLanguage() {
+  const settings = getSettings();
+  settings.language = document.getElementById('languageSelect').value;
+  saveSettings(settings);
+  closeSettingsModal();
+  updateSettingsDisplay();
+  // 刷新当前页面
+  if (document.getElementById('kidHome').classList.contains('active')) {
+    renderTodayRecommendations();
+  } else if (document.getElementById('graphPage').classList.contains('active')) {
+    renderSubjectChips();
+    graphPageNum = 1;
+    loadTopics();
+  }
+  alert('语言设置已保存，页面已刷新');
 }
 
 function showSettings() {
@@ -3471,18 +3513,82 @@ function clearAllData() {
 // ========== 数据加载 ==========
 async function loadData() {
   try {
-    const [topicsRes, depsRes] = await Promise.all([
+    // 优先加载中文数据
+    const [topicsRes, depsRes, zhRes] = await Promise.all([
       fetch('data/topics.json'),
-      fetch('data/dependencies.json')
+      fetch('data/dependencies.json'),
+      fetch('data/topics.zh.json').catch(() => null)
     ]);
     const topicsJson = await topicsRes.json();
     const depsJson = await depsRes.json();
-    topicsData = topicsJson.topics;
+    
+    let hasChinese = false;
+    if (zhRes && zhRes.ok) {
+      try {
+        const zhJson = await zhRes.json();
+        // 合并中文翻译
+        const zhMap = {};
+        zhJson.topics.forEach(t => { zhMap[t.id] = t; });
+        topicsData = topicsJson.topics.map(t => {
+          const zh = zhMap[t.id];
+          if (zh && zh.name_zh) {
+            return { ...t, name_zh: zh.name_zh, description_zh: zh.description_zh, evidence_zh: zh.evidence_zh, subject_zh: zh.subject_zh, domain_zh: zh.domain_zh };
+          }
+          return t;
+        });
+        hasChinese = topicsData.some(t => t.name_zh);
+        console.log(`数据加载成功: ${topicsData.length} 话题, ${depsData.length} 依赖, 中文翻译: ${hasChinese ? '已加载' : '无'}`);
+      } catch (e) {
+        topicsData = topicsJson.topics;
+        console.log('中文数据加载失败，使用英文');
+      }
+    } else {
+      topicsData = topicsJson.topics;
+    }
+    
     depsData = depsJson.dependencies;
-    console.log(`数据加载成功: ${topicsData.length} 话题, ${depsData.length} 依赖`);
+    
+    // 保存语言设置
+    const settings = getSettings();
+    if (!settings.language) {
+      settings.language = hasChinese ? 'zh' : 'en';
+      saveSettings(settings);
+    }
   } catch (e) {
     console.error('数据加载失败:', e);
   }
+}
+
+// 获取显示名称（根据语言设置）
+function getTopicName(topic) {
+  const settings = getSettings();
+  if (settings.language === 'zh' && topic.name_zh) return topic.name_zh;
+  return topic.name;
+}
+
+function getTopicDesc(topic) {
+  const settings = getSettings();
+  if (settings.language === 'zh' && topic.description_zh) return topic.description_zh;
+  return topic.description;
+}
+
+function getTopicEvidence(topic) {
+  const settings = getSettings();
+  if (settings.language === 'zh' && topic.evidence_zh && topic.evidence_zh.length > 0) return topic.evidence_zh;
+  return topic.evidence;
+}
+
+function getSubjectName(subject) {
+  const settings = getSettings();
+  if (settings.language === 'zh') {
+    const map = {
+      'Science': '科学', 'Mathematics': '数学', 'English': '英语', 'History': '历史',
+      'Personal & Social Development': '个人与社会', 'Life Skills': '生活技能',
+      'Computing': '计算机', 'Learning to Learn': '学习方法'
+    };
+    return map[subject] || subject;
+  }
+  return subject;
 }
 
 // 输入框自动高度
