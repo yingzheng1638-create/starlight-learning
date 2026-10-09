@@ -2468,6 +2468,9 @@ function navigateTo(page) {
   if (currentRole === 'dad') {
     if (page === 'home') {
       document.getElementById('dadOverview').classList.add('active');
+    } else if (page === 'settings') {
+      document.getElementById('settingsPage').classList.add('active');
+      updateSettingsDisplay();
     }
   } else {
     switch(page) {
