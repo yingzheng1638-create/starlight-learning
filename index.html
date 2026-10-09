@@ -1,0 +1,3514 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>星光学堂 · 家庭学习助手</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ========== 设计变量 ========== */
+:root {
+  /* 主色调 - 温暖的琥珀色系 */
+  --primary: #d97706;
+  --primary-light: #f59e0b;
+  --primary-dark: #b45309;
+  --primary-soft: #fef3c7;
+  
+  /* 辅助色 */
+  --accent-pink: #ec4899;
+  --accent-blue: #3b82f6;
+  --accent-green: #10b981;
+  --accent-purple: #8b5cf6;
+  
+  /* 中性色 */
+  --bg-primary: #fefdfb;
+  --bg-secondary: #faf7f2;
+  --bg-card: #ffffff;
+  --text-primary: #1c1917;
+  --text-secondary: #57534e;
+  --text-tertiary: #a8a29e;
+  --border: #e7e5e4;
+  --border-light: #f5f5f4;
+  
+  /* 学科色 */
+  --science: #ef4444;
+  --math: #3b82f6;
+  --english: #10b981;
+  --history: #f59e0b;
+  --psd: #8b5cf6;
+  --life: #ec4899;
+  --computing: #06b6d4;
+  --learning: #6366f1;
+  
+  /* 阴影 */
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.06);
+  --shadow-lg: 0 8px 30px rgba(0,0,0,0.08);
+  --shadow-xl: 0 20px 60px rgba(0,0,0,0.1);
+  
+  /* 圆角 */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+  
+  /* 字体 */
+  --font-serif: 'Noto Serif SC', 'Source Han Serif SC', serif;
+  --font-sans: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+html, body {
+  font-family: var(--font-sans);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  font-size: 14px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  background: 
+    radial-gradient(ellipse at top left, rgba(245, 158, 11, 0.08), transparent 50%),
+    radial-gradient(ellipse at bottom right, rgba(236, 72, 153, 0.06), transparent 50%),
+    var(--bg-primary);
+}
+
+/* ========== 通用组件 ========== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  text-decoration: none;
+}
+
+.btn:active { transform: scale(0.97); }
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary-light), var(--primary));
+  color: white;
+  box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3);
+}
+
+.btn-primary:hover {
+  box-shadow: 0 6px 20px rgba(217, 119, 6, 0.4);
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+}
+
+.btn-secondary:hover {
+  background: var(--border-light);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-secondary);
+}
+
+.btn-ghost:hover {
+  background: var(--bg-secondary);
+}
+
+.card {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-light);
+  overflow: hidden;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  border-radius: var(--radius-full);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.badge-amber { background: var(--primary-soft); color: var(--primary-dark); }
+.badge-green { background: #dcfce7; color: #15803d; }
+.badge-blue { background: #dbeafe; color: #1d4ed8; }
+.badge-pink { background: #fce7f3; color: #be185d; }
+.badge-purple { background: #ede9fe; color: #6d28d9; }
+
+/* ========== 密码页 ========== */
+.lock-screen {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(135deg, #fef3c7 0%, #fce7f3 50%, #dbeafe 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 24px;
+}
+
+.lock-screen.hidden { display: none; }
+
+.lock-card {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(20px);
+  border-radius: var(--radius-xl);
+  padding: 40px 32px;
+  width: 100%;
+  max-width: 360px;
+  text-align: center;
+  box-shadow: var(--shadow-xl);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+.lock-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.lock-title {
+  font-family: var(--font-serif);
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: var(--text-primary);
+}
+
+.lock-subtitle {
+  color: var(--text-secondary);
+  font-size: 14px;
+  margin-bottom: 28px;
+}
+
+.lock-input {
+  width: 100%;
+  padding: 14px 18px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-md);
+  font-size: 16px;
+  font-family: inherit;
+  outline: none;
+  transition: all 0.2s;
+  text-align: center;
+  letter-spacing: 8px;
+  background: var(--bg-card);
+}
+
+.lock-input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(217, 119, 6, 0.1);
+}
+
+.lock-error {
+  color: #dc2626;
+  font-size: 13px;
+  margin-top: 12px;
+  min-height: 18px;
+}
+
+.lock-hint {
+  margin-top: 20px;
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+
+/* ========== 角色选择页 ========== */
+.role-select {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  background: var(--bg-primary);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.role-select.hidden { display: none; }
+
+.role-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.role-logo {
+  font-size: 56px;
+  margin-bottom: 16px;
+}
+
+.role-title {
+  font-family: var(--font-serif);
+  font-size: 32px;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--primary), var(--accent-pink));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 8px;
+}
+
+.role-subtitle {
+  color: var(--text-secondary);
+  font-size: 15px;
+}
+
+.role-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  max-width: 320px;
+}
+
+.role-item {
+  background: var(--bg-card);
+  border: 2px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.role-item:hover {
+  border-color: var(--primary);
+  transform: translateX(4px);
+  box-shadow: var(--shadow-md);
+}
+
+.role-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  flex-shrink: 0;
+}
+
+.role-avatar.dad { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
+.role-avatar.mom { background: linear-gradient(135deg, #ec4899, #be185d); }
+.role-avatar.kid { background: linear-gradient(135deg, #f59e0b, #d97706); }
+
+.role-info {
+  flex: 1;
+}
+
+.role-name {
+  font-size: 17px;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.role-desc {
+  font-size: 13px;
+  color: var(--text-tertiary);
+}
+
+.role-arrow {
+  color: var(--text-tertiary);
+  font-size: 18px;
+}
+
+/* ========== 主应用 ========== */
+.app-container {
+  min-height: 100vh;
+  padding-bottom: 80px;
+}
+
+/* 顶部栏 */
+.top-bar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(254, 253, 251, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border-light);
+  padding: 12px 16px;
+}
+
+.top-bar-content {
+  max-width: 640px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.top-bar-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.app-icon {
+  font-size: 28px;
+}
+
+.app-title {
+  font-family: var(--font-serif);
+  font-size: 18px;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--primary), var(--accent-pink));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.top-bar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.icon-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: var(--bg-secondary);
+  cursor: pointer;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.icon-btn:hover { background: var(--border); }
+.icon-btn:active { transform: scale(0.95); }
+
+/* 孩子切换栏 */
+.child-switcher {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 12px 16px 0;
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.child-switcher::-webkit-scrollbar { display: none; }
+
+.child-chip {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: var(--radius-full);
+  background: var(--bg-card);
+  border: 1.5px solid var(--border-light);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.child-chip:hover { border-color: var(--border); }
+
+.child-chip.active {
+  background: linear-gradient(135deg, var(--primary-light), var(--primary));
+  border-color: transparent;
+  color: white;
+  box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3);
+}
+
+.child-chip-emoji { font-size: 16px; }
+
+.child-chip-age {
+  font-size: 11px;
+  opacity: 0.8;
+}
+
+/* 主内容区 */
+.main-content {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+/* ========== 爸爸视角 - 总览页 ========== */
+.dad-overview {
+  display: none;
+}
+
+.dad-overview.active { display: block; }
+
+.welcome-card {
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 50%, #fcd34d 100%);
+  border-radius: var(--radius-xl);
+  padding: 24px;
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.welcome-card::before {
+  content: '';
+  position: absolute;
+  top: -30px;
+  right: -20px;
+  width: 120px;
+  height: 120px;
+  background: radial-gradient(circle, rgba(255,255,255,0.4), transparent 70%);
+  border-radius: 50%;
+}
+
+.welcome-greeting {
+  font-family: var(--font-serif);
+  font-size: 22px;
+  font-weight: 700;
+  color: #78350f;
+  margin-bottom: 4px;
+  position: relative;
+}
+
+.welcome-text {
+  color: #92400e;
+  font-size: 14px;
+  position: relative;
+}
+
+.welcome-date {
+  margin-top: 12px;
+  font-size: 12px;
+  color: #a16207;
+  position: relative;
+}
+
+/* 孩子卡片列表 */
+.kids-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.kid-summary-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: 18px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-light);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.kid-summary-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.kid-summary-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.kid-summary-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  flex-shrink: 0;
+}
+
+.kid-summary-avatar.yaoyao { background: linear-gradient(135deg, #fce7f3, #fbcfe8); }
+.kid-summary-avatar.mingchuan { background: linear-gradient(135deg, #dbeafe, #bfdbfe); }
+.kid-summary-avatar.yuanyuan { background: linear-gradient(135deg, #fef3c7, #fde68a); }
+
+.kid-summary-info { flex: 1; }
+
+.kid-summary-name {
+  font-size: 17px;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.kid-summary-status {
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+
+.kid-summary-score {
+  text-align: right;
+}
+
+.score-value {
+  font-family: var(--font-serif);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--primary);
+  line-height: 1;
+}
+
+.score-label {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  margin-top: 2px;
+}
+
+/* 快速统计 */
+.kid-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.kid-stat {
+  text-align: center;
+  padding: 10px 8px;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+}
+
+.kid-stat-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.kid-stat-label {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  margin-top: 4px;
+}
+
+/* 家庭积分榜 */
+.leaderboard-section {
+  margin-bottom: 24px;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.section-title {
+  font-family: var(--font-serif);
+  font-size: 18px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.section-more {
+  font-size: 13px;
+  color: var(--primary);
+  cursor: pointer;
+}
+
+.leaderboard-list {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: 8px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-light);
+}
+
+.leaderboard-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  transition: background 0.2s;
+}
+
+.leaderboard-item:hover { background: var(--bg-secondary); }
+
+.leaderboard-rank {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.rank-1 { background: linear-gradient(135deg, #fcd34d, #f59e0b); color: white; }
+.rank-2 { background: linear-gradient(135deg, #e5e7eb, #9ca3af); color: white; }
+.rank-3 { background: linear-gradient(135deg, #fed7aa, #f97316); color: white; }
+.rank-other { background: var(--bg-secondary); color: var(--text-tertiary); }
+
+.leaderboard-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.leaderboard-info { flex: 1; }
+
+.leaderboard-name {
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 2px;
+}
+
+.leaderboard-detail {
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+
+.leaderboard-stars {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 700;
+  color: var(--primary);
+  font-size: 16px;
+}
+
+/* 最近动态 */
+.activity-section { margin-bottom: 24px; }
+
+.activity-list {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-light);
+}
+
+.activity-item {
+  display: flex;
+  gap: 12px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.activity-item:last-child { border-bottom: none; }
+
+.activity-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+  background: var(--bg-secondary);
+}
+
+.activity-content { flex: 1; }
+
+.activity-text {
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.activity-text strong { font-weight: 600; }
+
+.activity-time {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  margin-top: 4px;
+}
+
+/* ========== 孩子视角 - 首页 ========== */
+.kid-home { display: none; }
+.kid-home.active { display: block; }
+
+.kid-welcome {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: var(--radius-xl);
+  padding: 24px;
+  color: white;
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.kid-welcome.yaoyao { background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%); }
+.kid-welcome.mingchuan { background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%); }
+.kid-welcome.yuanyuan { background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%); }
+
+.kid-welcome::after {
+  content: '';
+  position: absolute;
+  bottom: -40px;
+  right: -30px;
+  width: 150px;
+  height: 150px;
+  background: radial-gradient(circle, rgba(255,255,255,0.2), transparent 70%);
+  border-radius: 50%;
+}
+
+.kid-welcome-emoji {
+  font-size: 40px;
+  margin-bottom: 8px;
+  position: relative;
+}
+
+.kid-welcome-text {
+  font-family: var(--font-serif);
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 4px;
+  position: relative;
+}
+
+.kid-welcome-sub {
+  font-size: 13px;
+  opacity: 0.9;
+  position: relative;
+}
+
+.kid-welcome-stats {
+  display: flex;
+  gap: 20px;
+  margin-top: 18px;
+  position: relative;
+}
+
+.kid-welcome-stat {
+  background: rgba(255,255,255,0.2);
+  backdrop-filter: blur(10px);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  flex: 1;
+  text-align: center;
+}
+
+.kid-welcome-stat-value {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.kid-welcome-stat-label {
+  font-size: 11px;
+  opacity: 0.85;
+  margin-top: 2px;
+}
+
+/* 今日推荐 */
+.today-section { margin-bottom: 24px; }
+
+.today-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.today-item {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-light);
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.today-item:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateX(4px);
+  border-color: var(--primary-soft);
+}
+
+.today-item-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.today-item-content { flex: 1; min-width: 0; }
+
+.today-item-title {
+  font-weight: 600;
+  font-size: 15px;
+  margin-bottom: 4px;
+  line-height: 1.4;
+}
+
+.today-item-desc {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.today-item-meta {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+  align-items: center;
+}
+
+.subject-tag {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  color: white;
+  font-weight: 500;
+}
+
+.age-tag {
+  font-size: 11px;
+  color: var(--text-tertiary);
+}
+
+/* 快捷入口 */
+.quick-actions {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.quick-action {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: 14px 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid var(--border-light);
+}
+
+.quick-action:active { transform: scale(0.95); }
+
+.quick-action-icon {
+  font-size: 28px;
+  margin-bottom: 6px;
+}
+
+.quick-action-label {
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+/* 爸爸的鼓励 */
+.encouragement-section { margin-bottom: 24px; }
+
+.encouragement-card {
+  background: linear-gradient(135deg, #fef3c7, #fce7f3);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  border: 1px solid rgba(217, 119, 6, 0.2);
+}
+
+.encouragement-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.encouragement-from {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--primary-dark);
+}
+
+.encouragement-time {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  margin-left: auto;
+}
+
+.encouragement-text {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--text-primary);
+  font-family: var(--font-serif);
+}
+
+/* ========== 知识图谱页 ========== */
+.graph-page { display: none; }
+.graph-page.active { display: block; }
+
+.search-bar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.search-input-wrapper {
+  flex: 1;
+  min-width: 200px;
+  position: relative;
+}
+
+.search-input {
+  width: 100%;
+  padding: 12px 16px 12px 42px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  font-family: inherit;
+  outline: none;
+  transition: all 0.2s;
+  background: var(--bg-card);
+}
+
+.search-input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(217, 119, 6, 0.1);
+}
+
+.search-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px;
+  color: var(--text-tertiary);
+}
+
+.filter-chips {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-bottom: 4px;
+}
+
+.filter-chips::-webkit-scrollbar { display: none; }
+
+.filter-chip {
+  flex-shrink: 0;
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.filter-chip.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: white;
+}
+
+.topics-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.topic-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-light);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.topic-card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--primary-soft);
+}
+
+.topic-card.learned {
+  border-color: var(--accent-green);
+  background: linear-gradient(135deg, #f0fdf4, var(--bg-card));
+}
+
+.topic-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.topic-card-title {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.4;
+  flex: 1;
+}
+
+.topic-card-desc {
+  font-size: 13px;
+  color: var(--text-tertiary);
+  line-height: 1.5;
+  margin-bottom: 10px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.topic-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.topic-card-tags {
+  display: flex;
+  gap: 6px;
+}
+
+.topic-card-status {
+  font-size: 12px;
+  color: var(--accent-green);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* ========== AI 问答页 ========== */
+.chat-page { display: none; }
+.chat-page.active { display: block; }
+
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 200px);
+  min-height: 400px;
+}
+
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.chat-msg {
+  display: flex;
+  gap: 10px;
+  max-width: 85%;
+}
+
+.chat-msg.user {
+  align-self: flex-end;
+  flex-direction: row-reverse;
+}
+
+.chat-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.chat-msg.ai .chat-avatar {
+  background: linear-gradient(135deg, var(--primary-light), var(--primary));
+}
+
+.chat-msg.user .chat-avatar {
+  background: linear-gradient(135deg, var(--accent-blue), #1d4ed8);
+}
+
+.chat-bubble {
+  padding: 12px 16px;
+  border-radius: var(--radius-lg);
+  font-size: 14px;
+  line-height: 1.6;
+  word-break: break-word;
+}
+
+.chat-msg.ai .chat-bubble {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-top-left-radius: 4px;
+  box-shadow: var(--shadow-sm);
+}
+
+.chat-msg.user .chat-bubble {
+  background: linear-gradient(135deg, var(--primary-light), var(--primary));
+  color: white;
+  border-top-right-radius: 4px;
+}
+
+.typing-indicator {
+  display: flex;
+  gap: 4px;
+  padding: 4px 0;
+}
+
+.typing-dot {
+  width: 6px;
+  height: 6px;
+  background: var(--text-tertiary);
+  border-radius: 50%;
+  animation: typing 1.4s infinite;
+}
+
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes typing {
+  0%, 60%, 100% { opacity: 0.3; transform: translateY(0); }
+  30% { opacity: 1; transform: translateY(-4px); }
+}
+
+.chat-input-area {
+  padding: 12px 0;
+  border-top: 1px solid var(--border-light);
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+}
+
+.chat-textarea {
+  flex: 1;
+  padding: 12px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  font-size: 14px;
+  font-family: inherit;
+  outline: none;
+  resize: none;
+  max-height: 120px;
+  min-height: 44px;
+  line-height: 1.5;
+  background: var(--bg-card);
+  transition: border-color 0.2s;
+}
+
+.chat-textarea:focus {
+  border-color: var(--primary);
+}
+
+.chat-send-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  background: linear-gradient(135deg, var(--primary-light), var(--primary));
+  color: white;
+  cursor: pointer;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3);
+}
+
+.chat-send-btn:active { transform: scale(0.95); }
+.chat-send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.quick-questions {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-bottom: 8px;
+  margin-bottom: 8px;
+}
+
+.quick-questions::-webkit-scrollbar { display: none; }
+
+.quick-q {
+  flex-shrink: 0;
+  padding: 8px 14px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.quick-q:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+/* ========== 学习进度页 ========== */
+.progress-page { display: none; }
+.progress-page.active { display: block; }
+
+.progress-overview {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-light);
+}
+
+.progress-circle-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.progress-circle {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: conic-gradient(var(--primary) 0%, var(--bg-secondary) 0%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.progress-circle-inner {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  background: var(--bg-card);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.progress-percent {
+  font-family: var(--font-serif);
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--primary);
+  line-height: 1;
+}
+
+.progress-label {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  margin-top: 4px;
+}
+
+.subject-progress-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.subject-progress-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.subject-progress-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.subject-progress-info { flex: 1; min-width: 0; }
+
+.subject-progress-name {
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 6px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.subject-progress-bar {
+  height: 6px;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.subject-progress-fill {
+  height: 100%;
+  border-radius: var(--radius-full);
+  transition: width 0.8s ease;
+}
+
+/* ========== 设置页 ========== */
+.settings-page { display: none; }
+.settings-page.active { display: block; }
+
+.settings-group {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  margin-bottom: 16px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-light);
+  overflow: hidden;
+}
+
+.settings-group-title {
+  padding: 14px 18px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  text-transform: none;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.settings-item {
+  display: flex;
+  align-items: center;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border-light);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.settings-item:last-child { border-bottom: none; }
+.settings-item:hover { background: var(--bg-secondary); }
+
+.settings-item-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  margin-right: 12px;
+  background: var(--bg-secondary);
+}
+
+.settings-item-content { flex: 1; }
+
+.settings-item-label {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.settings-item-value {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  margin-top: 2px;
+}
+
+.settings-item-arrow {
+  color: var(--text-tertiary);
+  font-size: 16px;
+}
+
+/* ========== 话题详情弹窗 ========== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(4px);
+  z-index: 2000;
+  display: none;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.modal-overlay.active { display: flex; }
+
+.modal {
+  background: var(--bg-card);
+  width: 100%;
+  max-width: 640px;
+  max-height: 85vh;
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  overflow-y: auto;
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.modal-header {
+  position: sticky;
+  top: 0;
+  background: var(--bg-card);
+  padding: 20px 20px 16px;
+  border-bottom: 1px solid var(--border-light);
+  z-index: 1;
+}
+
+.modal-close-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: var(--bg-secondary);
+  cursor: pointer;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+}
+
+.modal-title {
+  font-family: var(--font-serif);
+  font-size: 20px;
+  font-weight: 700;
+  padding-right: 40px;
+  line-height: 1.4;
+}
+
+.modal-tags {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.modal-body {
+  padding: 20px;
+}
+
+.modal-section {
+  margin-bottom: 20px;
+}
+
+.modal-section-title {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.modal-desc {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--text-secondary);
+}
+
+.evidence-list {
+  list-style: none;
+  padding: 0;
+}
+
+.evidence-list li {
+  padding: 8px 12px;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  margin-bottom: 6px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.evidence-list li::before {
+  content: '✓';
+  color: var(--accent-green);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.prereq-item {
+  padding: 10px 14px;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  margin-bottom: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.prereq-item:hover { background: var(--border); }
+
+.prereq-item.learned::before { content: '✅'; }
+.prereq-item:not(.learned)::before { content: '📚'; }
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  padding: 16px 20px;
+  border-top: 1px solid var(--border-light);
+  position: sticky;
+  bottom: 0;
+  background: var(--bg-card);
+}
+
+.modal-actions .btn { flex: 1; padding: 14px; }
+
+/* ========== 底部导航 ========== */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border-light);
+  padding: 8px 0 calc(8px + env(safe-area-inset-bottom));
+  z-index: 100;
+}
+
+.bottom-nav-inner {
+  max-width: 640px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-around;
+}
+
+.nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 0;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: var(--text-tertiary);
+  border: none;
+  background: transparent;
+  font-family: inherit;
+}
+
+.nav-item.active {
+  color: var(--primary);
+}
+
+.nav-item-icon {
+  font-size: 22px;
+  line-height: 1;
+}
+
+.nav-item-label {
+  font-size: 11px;
+  font-weight: 500;
+}
+
+/* ========== 设置弹窗 ========== */
+.settings-modal .modal-body {
+  padding-top: 0;
+}
+
+.form-group {
+  margin-bottom: 18px;
+}
+
+.form-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: var(--text-secondary);
+}
+
+.form-input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  font-family: inherit;
+  outline: none;
+  transition: all 0.2s;
+  background: var(--bg-card);
+}
+
+.form-input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(217, 119, 6, 0.1);
+}
+
+.form-hint {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  margin-top: 6px;
+}
+
+.form-select {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  font-family: inherit;
+  outline: none;
+  background: var(--bg-card);
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+/* 空状态 */
+.empty-state {
+  text-align: center;
+  padding: 48px 24px;
+}
+
+.empty-icon {
+  font-size: 56px;
+  margin-bottom: 16px;
+}
+
+.empty-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.empty-desc {
+  font-size: 13px;
+  color: var(--text-tertiary);
+}
+
+/* 响应式 - 桌面端优化 */
+@media (min-width: 768px) {
+  .bottom-nav { display: none; }
+  .app-container { padding-bottom: 0; }
+  .top-bar { padding: 16px 24px; }
+  .main-content { padding: 24px 16px; }
+  .modal {
+    border-radius: var(--radius-xl);
+    margin: auto;
+    max-height: 80vh;
+  }
+  .modal-overlay { align-items: center; }
+  @keyframes slideUp {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  .quick-actions { grid-template-columns: repeat(4, 1fr); }
+}
+
+/* 加载动画 */
+.loading-dots {
+  display: inline-flex;
+  gap: 4px;
+}
+
+.loading-dots span {
+  width: 6px;
+  height: 6px;
+  background: currentColor;
+  border-radius: 50%;
+  animation: dotBounce 1.4s infinite;
+}
+
+.loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+.loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes dotBounce {
+  0%, 80%, 100% { transform: scale(0.6); opacity: 0.5; }
+  40% { transform: scale(1); opacity: 1; }
+}
+
+/* 星星动画 */
+@keyframes starPop {
+  0% { transform: scale(0) rotate(-180deg); }
+  50% { transform: scale(1.2) rotate(10deg); }
+  100% { transform: scale(1) rotate(0); }
+}
+
+.star-pop {
+  animation: starPop 0.5s ease-out;
+}
+</style>
+</head>
+<body>
+
+<!-- 密码锁页面 -->
+<div class="lock-screen" id="lockScreen">
+  <div class="lock-card">
+    <div class="lock-icon">🔐</div>
+    <div class="lock-title">星光学堂</div>
+    <div class="lock-subtitle">家庭专属学习空间</div>
+    <input type="password" class="lock-input" id="lockInput" placeholder="请输入密码" maxlength="6" inputmode="numeric">
+    <div class="lock-error" id="lockError"></div>
+    <button class="btn btn-primary" style="width: 100%; margin-top: 16px; padding: 14px;" onclick="unlockApp()">
+      进入学习空间
+    </button>
+    <div class="lock-hint">初始密码：123456 · 可在设置中修改</div>
+  </div>
+</div>
+
+<!-- 角色选择页 -->
+<div class="role-select hidden" id="roleSelect">
+  <div class="role-header">
+    <div class="role-logo">🌟</div>
+    <div class="role-title">星光学堂</div>
+    <div class="role-subtitle">选择你的身份</div>
+  </div>
+  <div class="role-list">
+    <div class="role-item" onclick="enterAsDad()">
+      <div class="role-avatar dad">👨</div>
+      <div class="role-info">
+        <div class="role-name">爸爸</div>
+        <div class="role-desc">查看孩子学习情况，发送鼓励</div>
+      </div>
+      <div class="role-arrow">›</div>
+    </div>
+    <div class="role-item" onclick="enterAsMom()">
+      <div class="role-avatar mom">👩</div>
+      <div class="role-info">
+        <div class="role-name">妈妈</div>
+        <div class="role-desc">辅导孩子学习，管理进度</div>
+      </div>
+      <div class="role-arrow">›</div>
+    </div>
+    <div class="role-item" onclick="showChildSelect()">
+      <div class="role-avatar kid">👧</div>
+      <div class="role-info">
+        <div class="role-name">我是小朋友</div>
+        <div class="role-desc">开始今天的学习之旅</div>
+      </div>
+      <div class="role-arrow">›</div>
+    </div>
+  </div>
+</div>
+
+<!-- 孩子选择页 -->
+<div class="role-select hidden" id="childSelect">
+  <div class="role-header">
+    <div class="role-logo">✨</div>
+    <div class="role-title">选择你是谁</div>
+    <div class="role-subtitle">开始今天的学习吧！</div>
+  </div>
+  <div class="role-list">
+    <div class="role-item" onclick="enterAsChild(0)">
+      <div class="role-avatar" style="background: linear-gradient(135deg, #fce7f3, #f472b6);">👧</div>
+      <div class="role-info">
+        <div class="role-name">遥遥</div>
+        <div class="role-desc">13岁 · 初中姐姐</div>
+      </div>
+      <div class="role-arrow">›</div>
+    </div>
+    <div class="role-item" onclick="enterAsChild(1)">
+      <div class="role-avatar" style="background: linear-gradient(135deg, #dbeafe, #60a5fa);">👦</div>
+      <div class="role-info">
+        <div class="role-name">鸣川</div>
+        <div class="role-desc">10岁 · 小学哥哥</div>
+      </div>
+      <div class="role-arrow">›</div>
+    </div>
+    <div class="role-item" onclick="enterAsChild(2)">
+      <div class="role-avatar" style="background: linear-gradient(135deg, #fef3c7, #fbbf24);">👧</div>
+      <div class="role-info">
+        <div class="role-name">媛媛</div>
+        <div class="role-desc">5岁 · 幼儿园妹妹</div>
+      </div>
+      <div class="role-arrow">›</div>
+    </div>
+  </div>
+  <div style="margin-top: 24px;">
+    <button class="btn btn-ghost" onclick="backToRoleSelect()">← 返回</button>
+  </div>
+</div>
+
+<!-- 主应用 -->
+<div class="app-container" id="appContainer" style="display: none;">
+  <!-- 顶部栏 -->
+  <div class="top-bar">
+    <div class="top-bar-content">
+      <div class="top-bar-left">
+        <span class="app-icon">🌟</span>
+        <span class="app-title">星光学堂</span>
+      </div>
+      <div class="top-bar-right">
+        <button class="icon-btn" onclick="showSettings()" title="设置">⚙️</button>
+        <button class="icon-btn" onclick="switchRole()" title="切换身份">🔄</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 孩子切换栏（爸爸/妈妈视角显示） -->
+  <div class="child-switcher" id="childSwitcher" style="display: none;"></div>
+
+  <!-- 主内容区 -->
+  <div class="main-content">
+    <!-- 爸爸视角 - 总览 -->
+    <div class="dad-overview active" id="dadOverview">
+      <!-- 欢迎卡片 -->
+      <div class="welcome-card">
+        <div class="welcome-greeting">爸爸，你好！</div>
+        <div class="welcome-text">来看看孩子们今天学得怎么样</div>
+        <div class="welcome-date" id="dadDate"></div>
+      </div>
+
+      <!-- 三个孩子概览 -->
+      <div class="kids-cards" id="kidsCards"></div>
+
+      <!-- 家庭积分榜 -->
+      <div class="leaderboard-section">
+        <div class="section-header">
+          <div class="section-title">🏆 家庭积分榜</div>
+          <div class="section-more" onclick="refreshLeaderboard()">刷新</div>
+        </div>
+        <div class="leaderboard-list" id="leaderboardList"></div>
+      </div>
+
+      <!-- 最近动态 -->
+      <div class="activity-section">
+        <div class="section-header">
+          <div class="section-title">📝 最近动态</div>
+        </div>
+        <div class="activity-list" id="activityList">
+          <div class="empty-state" style="padding: 32px;">
+            <div class="empty-icon">📭</div>
+            <div class="empty-title">暂无动态</div>
+            <div class="empty-desc">孩子们开始学习后会显示在这里</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 发送鼓励 -->
+      <div class="card" style="padding: 20px; margin-bottom: 24px;">
+        <div class="section-title" style="margin: 0 0 12px 0; font-size: 16px;">💌 给孩子们发鼓励</div>
+        <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+          <button class="btn btn-secondary" style="flex: 1; font-size: 13px;" onclick="quickEncourage('all', '爸爸为你们骄傲！')">给所有人</button>
+          <button class="btn btn-secondary" style="flex: 1; font-size: 13px;" onclick="quickEncourage('yaoyao', '遥遥加油！')">给遥遥</button>
+          <button class="btn btn-secondary" style="flex: 1; font-size: 13px;" onclick="quickEncourage('mingchuan', '鸣川好样的！')">给鸣川</button>
+          <button class="btn btn-secondary" style="flex: 1; font-size: 13px;" onclick="quickEncourage('yuanyuan', '媛媛真棒！')">给媛媛</button>
+        </div>
+        <textarea class="form-input" id="customEncourage" placeholder="写点什么给孩子们..." rows="2" style="margin-bottom: 10px;"></textarea>
+        <button class="btn btn-primary" style="width: 100%;" onclick="sendEncouragement()">发送鼓励 💝</button>
+      </div>
+    </div>
+
+    <!-- 孩子视角 - 首页 -->
+    <div class="kid-home" id="kidHome">
+      <div class="kid-welcome" id="kidWelcome">
+        <div class="kid-welcome-emoji" id="kidWelcomeEmoji">🌟</div>
+        <div class="kid-welcome-text" id="kidWelcomeText">你好呀！</div>
+        <div class="kid-welcome-sub" id="kidWelcomeSub">今天也要加油哦～</div>
+        <div class="kid-welcome-stats">
+          <div class="kid-welcome-stat">
+            <div class="kid-welcome-stat-value" id="kidStatLearned">0</div>
+            <div class="kid-welcome-stat-label">已掌握</div>
+          </div>
+          <div class="kid-welcome-stat">
+            <div class="kid-welcome-stat-value" id="kidStatStars">0</div>
+            <div class="kid-welcome-stat-label">小星星</div>
+          </div>
+          <div class="kid-welcome-stat">
+            <div class="kid-welcome-stat-value" id="kidStatDay">0</div>
+            <div class="kid-welcome-stat-label">连续学习</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 爸爸的鼓励 -->
+      <div class="encouragement-section" id="encouragementSection" style="display: none;">
+        <div class="section-header">
+          <div class="section-title">💌 爸爸的话</div>
+        </div>
+        <div class="encouragement-card">
+          <div class="encouragement-header">
+            <span>👨 爸爸</span>
+            <span class="encouragement-time" id="encouragementTime"></span>
+          </div>
+          <div class="encouragement-text" id="encouragementText"></div>
+        </div>
+      </div>
+
+      <!-- 快捷入口 -->
+      <div class="section-title" style="margin-bottom: 12px;">🚀 快速开始</div>
+      <div class="quick-actions">
+        <div class="quick-action" onclick="navigateTo('today')">
+          <div class="quick-action-icon">📅</div>
+          <div class="quick-action-label">今日推荐</div>
+        </div>
+        <div class="quick-action" onclick="navigateTo('graph')">
+          <div class="quick-action-icon">🗺️</div>
+          <div class="quick-action-label">知识图谱</div>
+        </div>
+        <div class="quick-action" onclick="navigateTo('chat')">
+          <div class="quick-action-icon">🤖</div>
+          <div class="quick-action-label">AI老师</div>
+        </div>
+        <div class="quick-action" onclick="navigateTo('progress')">
+          <div class="quick-action-icon">📊</div>
+          <div class="quick-action-label">我的进度</div>
+        </div>
+      </div>
+
+      <!-- 今日推荐 -->
+      <div class="today-section">
+        <div class="section-header">
+          <div class="section-title">🎯 今日推荐</div>
+        </div>
+        <div class="today-list" id="todayList">
+          <div class="loading-dots" style="justify-content: center; padding: 24px;">
+            <span></span><span></span><span></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 周末冲刺（鸣川） -->
+      <div class="today-section" id="weekendSection" style="display: none;">
+        <div class="section-header">
+          <div class="section-title">🎒 周末冲刺</div>
+          <div class="section-more">查看全部</div>
+        </div>
+        <div class="card" style="padding: 16px; background: linear-gradient(135deg, #fef3c7, #fde68a);">
+          <div style="font-weight: 600; margin-bottom: 8px;">本周薄弱知识点</div>
+          <div style="font-size: 13px; color: var(--text-secondary); margin-bottom: 12px;">
+            周末在家，把这些攻克掉吧！
+          </div>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <span class="badge badge-amber">分数计算</span>
+            <span class="badge badge-amber">英语时态</span>
+            <span class="badge badge-amber">科学实验</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 知识图谱页 -->
+    <div class="graph-page" id="graphPage">
+      <div class="page-title" style="font-family: var(--font-serif); font-size: 22px; font-weight: 700; margin-bottom: 16px;">
+        🗺️ 知识图谱
+      </div>
+      <div class="search-bar">
+        <div class="search-input-wrapper">
+          <span class="search-icon">🔍</span>
+          <input type="text" class="search-input" id="searchInput" placeholder="搜索知识点...">
+        </div>
+      </div>
+      <div class="filter-chips" id="subjectChips"></div>
+      <div class="filter-chips" id="ageChips">
+        <div class="filter-chip active" data-age="">全部年龄</div>
+        <div class="filter-chip" data-age="4-5">4-5岁</div>
+        <div class="filter-chip" data-age="6-7">6-7岁</div>
+        <div class="filter-chip" data-age="8-9">8-9岁</div>
+        <div class="filter-chip" data-age="10-11">10-11岁</div>
+        <div class="filter-chip" data-age="12+">12岁+</div>
+      </div>
+      <div class="topics-list" id="topicsList"></div>
+      <div style="text-align: center; padding: 20px; color: var(--text-tertiary); font-size: 13px;" id="loadMoreArea">
+        加载更多...
+      </div>
+    </div>
+
+    <!-- AI 问答页 -->
+    <div class="chat-page" id="chatPage">
+      <div style="text-align: center; margin-bottom: 12px;">
+        <div style="font-family: var(--font-serif); font-size: 18px; font-weight: 700;">🤖 小豆老师</div>
+        <div style="font-size: 12px; color: var(--text-tertiary);">有什么问题尽管问我吧～</div>
+      </div>
+      <div class="quick-questions">
+        <div class="quick-q" onclick="quickQuestion('什么是分数？')">什么是分数？</div>
+        <div class="quick-q" onclick="quickQuestion('为什么天空是蓝色的？')">天为什么是蓝的？</div>
+        <div class="quick-q" onclick="quickQuestion('地球为什么会自转？')">地球为什么转？</div>
+        <div class="quick-q" onclick="quickQuestion('怎样写好作文？')">怎么写好作文？</div>
+      </div>
+      <div class="chat-container">
+        <div class="chat-messages" id="chatMessages">
+          <div class="chat-msg ai">
+            <div class="chat-avatar">🤖</div>
+            <div class="chat-bubble">
+              你好呀！我是小豆老师 🌟<br><br>
+              有什么不懂的问题都可以问我哦～我会用你听得懂的方式给你讲解！
+            </div>
+          </div>
+        </div>
+        <div class="chat-input-area">
+          <textarea class="chat-textarea" id="chatInput" placeholder="输入你的问题..." rows="1"></textarea>
+          <button class="chat-send-btn" id="sendBtn" onclick="sendMessage()">➤</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 学习进度页 -->
+    <div class="progress-page" id="progressPage">
+      <div style="font-family: var(--font-serif); font-size: 22px; font-weight: 700; margin-bottom: 16px;">
+        📊 我的进度
+      </div>
+      <div class="progress-overview">
+        <div class="progress-circle-wrap">
+          <div class="progress-circle" id="progressCircle">
+            <div class="progress-circle-inner">
+              <div class="progress-percent" id="progressPercent">0%</div>
+              <div class="progress-label">总进度</div>
+            </div>
+          </div>
+        </div>
+        <div style="display: flex; justify-content: space-around; text-align: center; margin-bottom: 20px;">
+          <div>
+            <div style="font-size: 24px; font-weight: 700; color: var(--primary);" id="totalLearned">0</div>
+            <div style="font-size: 12px; color: var(--text-tertiary);">已掌握</div>
+          </div>
+          <div>
+            <div style="font-size: 24px; font-weight: 700; color: var(--accent-blue);" id="totalTopics">1590</div>
+            <div style="font-size: 12px; color: var(--text-tertiary);">总知识点</div>
+          </div>
+          <div>
+            <div style="font-size: 24px; font-weight: 700; color: var(--accent-green);" id="totalStars">0</div>
+            <div style="font-size: 12px; color: var(--text-tertiary);">小星星</div>
+          </div>
+        </div>
+        <div class="subject-progress-list" id="subjectProgressList"></div>
+      </div>
+
+      <div style="font-family: var(--font-serif); font-size: 18px; font-weight: 700; margin: 20px 0 12px;">
+        ✨ 最近掌握
+      </div>
+      <div class="topics-list" id="recentLearned">
+        <div class="empty-state">
+          <div class="empty-icon">🌱</div>
+          <div class="empty-title">还没有掌握的知识点</div>
+          <div class="empty-desc">开始学习后会显示在这里</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 设置页 -->
+    <div class="settings-page" id="settingsPage">
+      <div style="font-family: var(--font-serif); font-size: 22px; font-weight: 700; margin-bottom: 16px;">
+        ⚙️ 设置
+      </div>
+
+      <div class="settings-group">
+        <div class="settings-group-title">豆包 AI 设置</div>
+        <div class="settings-item" onclick="showApiSettings()">
+          <div class="settings-item-icon">🔑</div>
+          <div class="settings-item-content">
+            <div class="settings-item-label">API Key</div>
+            <div class="settings-item-value" id="apiKeyStatus">未配置</div>
+          </div>
+          <div class="settings-item-arrow">›</div>
+        </div>
+        <div class="settings-item" onclick="showModelSettings()">
+          <div class="settings-item-icon">🤖</div>
+          <div class="settings-item-content">
+            <div class="settings-item-label">AI 模型</div>
+            <div class="settings-item-value" id="modelName">豆包 Seed 1.6 Flash</div>
+          </div>
+          <div class="settings-item-arrow">›</div>
+        </div>
+      </div>
+
+      <div class="settings-group">
+        <div class="settings-group-title">安全</div>
+        <div class="settings-item" onclick="showPasswordSettings()">
+          <div class="settings-item-icon">🔐</div>
+          <div class="settings-item-content">
+            <div class="settings-item-label">修改密码</div>
+            <div class="settings-item-value">设置访问密码</div>
+          </div>
+          <div class="settings-item-arrow">›</div>
+        </div>
+      </div>
+
+      <div class="settings-group">
+        <div class="settings-group-title">数据管理</div>
+        <div class="settings-item" onclick="exportData()">
+          <div class="settings-item-icon">📤</div>
+          <div class="settings-item-content">
+            <div class="settings-item-label">导出学习数据</div>
+            <div class="settings-item-value">备份所有学习记录</div>
+          </div>
+          <div class="settings-item-arrow">›</div>
+        </div>
+        <div class="settings-item" onclick="clearAllData()">
+          <div class="settings-item-icon" style="background: #fee2e2;">🗑️</div>
+          <div class="settings-item-content">
+            <div class="settings-item-label" style="color: #dc2626;">清除所有数据</div>
+            <div class="settings-item-value">删除所有学习记录和设置</div>
+          </div>
+          <div class="settings-item-arrow">›</div>
+        </div>
+      </div>
+
+      <div class="settings-group">
+        <div class="settings-group-title">关于</div>
+        <div class="settings-item">
+          <div class="settings-item-icon">📖</div>
+          <div class="settings-item-content">
+            <div class="settings-item-label">知识图谱数据来源</div>
+            <div class="settings-item-value">Marble Skill Taxonomy v1</div>
+          </div>
+        </div>
+        <div class="settings-item">
+          <div class="settings-item-icon">📱</div>
+          <div class="settings-item-content">
+            <div class="settings-item-label">版本</div>
+            <div class="settings-item-value">星光学堂 v1.0</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 底部导航 -->
+  <div class="bottom-nav" id="bottomNav">
+    <div class="bottom-nav-inner">
+      <button class="nav-item active" data-nav="home" onclick="navigateTo('home')">
+        <div class="nav-item-icon">🏠</div>
+        <div class="nav-item-label">首页</div>
+      </button>
+      <button class="nav-item" data-nav="graph" onclick="navigateTo('graph')">
+        <div class="nav-item-icon">🗺️</div>
+        <div class="nav-item-label">图谱</div>
+      </button>
+      <button class="nav-item" data-nav="chat" onclick="navigateTo('chat')">
+        <div class="nav-item-icon">🤖</div>
+        <div class="nav-item-label">AI老师</div>
+      </button>
+      <button class="nav-item" data-nav="progress" onclick="navigateTo('progress')">
+        <div class="nav-item-icon">📊</div>
+        <div class="nav-item-label">进度</div>
+      </button>
+      <button class="nav-item" data-nav="settings" onclick="navigateTo('settings')">
+        <div class="nav-item-icon">⚙️</div>
+        <div class="nav-item-label">我的</div>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- 话题详情弹窗 -->
+<div class="modal-overlay" id="topicModal">
+  <div class="modal">
+    <div class="modal-header">
+      <button class="modal-close-btn" onclick="closeTopicModal()">×</button>
+      <div class="modal-title" id="modalTopicName"></div>
+      <div class="modal-tags" id="modalTopicTags"></div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-section">
+        <div class="modal-section-title">📖 这是什么</div>
+        <div class="modal-desc" id="modalTopicDesc"></div>
+      </div>
+
+      <div class="modal-section">
+        <div class="modal-section-title">✅ 掌握标准</div>
+        <ul class="evidence-list" id="modalEvidence"></ul>
+      </div>
+
+      <div class="modal-section">
+        <div class="modal-section-title">🔗 先学这些（前置知识）</div>
+        <div id="modalPrereqs"></div>
+      </div>
+
+      <div class="modal-section">
+        <div class="modal-section-title">🚀 学完可以学</div>
+        <div id="modalUnlocks"></div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="askAIAboutTopic()">🤖 让AI讲解</button>
+      <button class="btn btn-primary" id="markLearnedBtn" onclick="toggleLearned()">✅ 标记掌握</button>
+    </div>
+  </div>
+</div>
+
+<!-- 设置弹窗 -->
+<div class="modal-overlay settings-modal" id="settingsModal">
+  <div class="modal" style="max-width: 480px;">
+    <div class="modal-header">
+      <button class="modal-close-btn" onclick="closeSettingsModal()">×</button>
+      <div class="modal-title" id="settingsModalTitle">设置</div>
+    </div>
+    <div class="modal-body" id="settingsModalBody"></div>
+  </div>
+</div>
+
+<script>
+// ========== 全局数据 ==========
+let topicsData = [];
+let depsData = [];
+let currentChildIndex = 0;
+let currentTopicId = null;
+let currentRole = null; // 'dad' | 'mom' | 'child'
+let graphPageNum = 1;
+let graphPageSize = 20;
+let isLoadingTopics = false;
+
+// 孩子配置
+const children = [
+  { 
+    id: 'yaoyao', 
+    name: '遥遥', 
+    emoji: '👧', 
+    birthYear: 2013, 
+    gender: 'female',
+    gradient: 'linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%)',
+    avatarBg: 'linear-gradient(135deg, #fce7f3, #f472b6)',
+    description: '初中姐姐'
+  },
+  { 
+    id: 'mingchuan', 
+    name: '鸣川', 
+    emoji: '👦', 
+    birthYear: 2016, 
+    gender: 'male',
+    gradient: 'linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)',
+    avatarBg: 'linear-gradient(135deg, #dbeafe, #60a5fa)',
+    description: '小学哥哥'
+  },
+  { 
+    id: 'yuanyuan', 
+    name: '媛媛', 
+    emoji: '👧', 
+    birthYear: 2021, 
+    gender: 'female',
+    gradient: 'linear-gradient(135deg, #f59e0b 0%, #ef4444 100%)',
+    avatarBg: 'linear-gradient(135deg, #fef3c7, #fbbf24)',
+    description: '幼儿园妹妹'
+  }
+];
+
+// 学科颜色
+const subjectColors = {
+  'Science': '#ef4444',
+  'Mathematics': '#3b82f6',
+  'English': '#10b981',
+  'History': '#f59e0b',
+  'Personal & Social Development': '#8b5cf6',
+  'Life Skills': '#ec4899',
+  'Computing': '#06b6d4',
+  'Learning to Learn': '#6366f1'
+};
+
+const subjectEmojis = {
+  'Science': '🔬',
+  'Mathematics': '📐',
+  'English': '📚',
+  'History': '🏛️',
+  'Personal & Social Development': '💝',
+  'Life Skills': '🎯',
+  'Computing': '💻',
+  'Learning to Learn': '🧠'
+};
+
+// ========== 存储相关 ==========
+function getSettings() {
+  const data = localStorage.getItem('starlight_settings');
+  return data ? JSON.parse(data) : { 
+    apiKey: '', 
+    model: 'doubao-seed-1-6-flash-250828',
+    password: '123456'
+  };
+}
+
+function saveSettings(settings) {
+  localStorage.setItem('starlight_settings', JSON.stringify(settings));
+}
+
+function getChildData(childId) {
+  const key = `starlight_${childId}`;
+  const data = localStorage.getItem(key);
+  return data ? JSON.parse(data) : {
+    learnedTopics: [],
+    stars: 0,
+    streak: 0,
+    lastLearnDate: null,
+    encouragement: null,
+    activities: []
+  };
+}
+
+function saveChildData(childId, data) {
+  localStorage.setItem(`starlight_${childId}`, JSON.stringify(data));
+}
+
+function getAge(birthYear) {
+  return new Date().getFullYear() - birthYear;
+}
+
+// ========== 密码锁 ==========
+function unlockApp() {
+  const input = document.getElementById('lockInput');
+  const error = document.getElementById('lockError');
+  const settings = getSettings();
+  
+  if (input.value === settings.password) {
+    document.getElementById('lockScreen').classList.add('hidden');
+    document.getElementById('roleSelect').classList.remove('hidden');
+    error.textContent = '';
+  } else {
+    error.textContent = '密码错误，请重试';
+    input.style.borderColor = '#dc2626';
+    setTimeout(() => { input.style.borderColor = ''; }, 500);
+  }
+}
+
+document.getElementById('lockInput').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') unlockApp();
+});
+
+// ========== 角色选择 ==========
+function enterAsDad() {
+  currentRole = 'dad';
+  showApp();
+  renderDadView();
+}
+
+function enterAsMom() {
+  currentRole = 'mom';
+  currentChildIndex = 2; // 默认看媛媛
+  showApp();
+  renderChildSwitcher();
+  renderKidView();
+}
+
+function showChildSelect() {
+  document.getElementById('roleSelect').classList.add('hidden');
+  document.getElementById('childSelect').classList.remove('hidden');
+}
+
+function backToRoleSelect() {
+  document.getElementById('childSelect').classList.add('hidden');
+  document.getElementById('roleSelect').classList.remove('hidden');
+}
+
+function enterAsChild(index) {
+  currentRole = 'child';
+  currentChildIndex = index;
+  showApp();
+  renderKidView();
+}
+
+function showApp() {
+  document.getElementById('roleSelect').classList.add('hidden');
+  document.getElementById('childSelect').classList.add('hidden');
+  document.getElementById('appContainer').style.display = 'block';
+  
+  // 根据角色显示/隐藏底部导航
+  const bottomNav = document.getElementById('bottomNav');
+  if (currentRole === 'dad') {
+    bottomNav.style.display = 'none';
+  } else {
+    bottomNav.style.display = 'block';
+  }
+}
+
+function switchRole() {
+  document.getElementById('appContainer').style.display = 'none';
+  document.getElementById('roleSelect').classList.remove('hidden');
+  currentRole = null;
+}
+
+// ========== 导航 ==========
+function navigateTo(page) {
+  // 更新底部导航
+  document.querySelectorAll('.nav-item').forEach(item => {
+    item.classList.toggle('active', item.dataset.nav === page);
+  });
+
+  // 隐藏所有页面
+  document.querySelectorAll('.kid-home, .graph-page, .chat-page, .progress-page, .settings-page, .dad-overview').forEach(p => {
+    p.classList.remove('active');
+  });
+
+  // 显示对应页面
+  if (currentRole === 'dad') {
+    if (page === 'home') {
+      document.getElementById('dadOverview').classList.add('active');
+    }
+  } else {
+    switch(page) {
+      case 'home':
+      case 'today':
+        document.getElementById('kidHome').classList.add('active');
+        break;
+      case 'graph':
+        document.getElementById('graphPage').classList.add('active');
+        renderSubjectChips();
+        loadTopics();
+        break;
+      case 'chat':
+        document.getElementById('chatPage').classList.add('active');
+        break;
+      case 'progress':
+        document.getElementById('progressPage').classList.add('active');
+        renderProgressPage();
+        break;
+      case 'settings':
+        document.getElementById('settingsPage').classList.add('active');
+        updateSettingsDisplay();
+        break;
+    }
+  }
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ========== 孩子切换栏（爸爸/妈妈视角） ==========
+function renderChildSwitcher() {
+  const switcher = document.getElementById('childSwitcher');
+  if (currentRole === 'child') {
+    switcher.style.display = 'none';
+    return;
+  }
+  
+  switcher.style.display = 'flex';
+  switcher.innerHTML = children.map((child, index) => {
+    const age = getAge(child.birthYear);
+    return `<div class="child-chip ${index === currentChildIndex ? 'active' : ''}" onclick="switchChild(${index})">
+      <span class="child-chip-emoji">${child.emoji}</span>
+      <span>${child.name}</span>
+      <span class="child-chip-age">${age}岁</span>
+    </div>`;
+  }).join('');
+}
+
+function switchChild(index) {
+  currentChildIndex = index;
+  renderChildSwitcher();
+  
+  if (currentRole === 'dad') {
+    // 爸爸视角切换孩子
+    renderDadView();
+  } else {
+    renderKidView();
+  }
+}
+
+// ========== 爸爸视角 ==========
+function renderDadView() {
+  document.getElementById('dadOverview').classList.add('active');
+  document.getElementById('childSwitcher').style.display = 'none'; // 爸爸页不需要切换栏
+  
+  // 日期
+  const now = new Date();
+  const options = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' };
+  document.getElementById('dadDate').textContent = now.toLocaleDateString('zh-CN', options);
+  
+  // 孩子卡片
+  renderKidsCards();
+  
+  // 积分榜
+  renderLeaderboard();
+  
+  // 动态
+  renderActivities();
+}
+
+function renderKidsCards() {
+  const container = document.getElementById('kidsCards');
+  container.innerHTML = children.map(child => {
+    const data = getChildData(child.id);
+    const age = getAge(child.birthYear);
+    const ageAppropriate = topicsData.filter(t => 
+      t.ageRangeStart <= age && t.ageRangeEnd >= age
+    ).length;
+    const learnedCount = data.learnedTopics.length;
+    const percent = ageAppropriate > 0 ? Math.round((learnedCount / ageAppropriate) * 100) : 0;
+    
+    // 状态描述
+    let status = '今天还没学习';
+    if (data.lastLearnDate === new Date().toDateString()) {
+      status = '今天已学习 ✓';
+    }
+    
+    return `
+      <div class="kid-summary-card" onclick="viewChildDetail('${child.id}')">
+        <div class="kid-summary-header">
+          <div class="kid-summary-avatar ${child.id}" style="background: ${child.avatarBg}">${child.emoji}</div>
+          <div class="kid-summary-info">
+            <div class="kid-summary-name">${child.name}</div>
+            <div class="kid-summary-status">${age}岁 · ${status} · 连续${data.streak}天</div>
+          </div>
+          <div class="kid-summary-score">
+            <div class="score-value">${data.stars}</div>
+            <div class="score-label">星星</div>
+          </div>
+        </div>
+        <div class="kid-stats">
+          <div class="kid-stat">
+            <div class="kid-stat-value">${learnedCount}</div>
+            <div class="kid-stat-label">已掌握</div>
+          </div>
+          <div class="kid-stat">
+            <div class="kid-stat-value">${percent}%</div>
+            <div class="kid-stat-label">适龄进度</div>
+          </div>
+          <div class="kid-stat">
+            <div class="kid-stat-value">${ageAppropriate}</div>
+            <div class="kid-stat-label">适龄知识点</div>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function viewChildDetail(childId) {
+  const index = children.findIndex(c => c.id === childId);
+  currentChildIndex = index;
+  currentRole = 'mom'; // 切换到家长视角看详情
+  renderChildSwitcher();
+  renderKidView();
+  navigateTo('home');
+}
+
+function renderLeaderboard() {
+  const list = children.map(child => {
+    const data = getChildData(child.id);
+    return { name: child.name, emoji: child.emoji, stars: data.stars, learned: data.learnedTopics.length, avatarBg: child.avatarBg };
+  }).sort((a, b) => b.stars - a.stars);
+
+  const container = document.getElementById('leaderboardList');
+  container.innerHTML = list.map((item, index) => `
+    <div class="leaderboard-item">
+      <div class="leaderboard-rank rank-${index + 1 > 3 ? 'other' : index + 1}">${index + 1}</div>
+      <div class="leaderboard-avatar" style="background: ${item.avatarBg}">${item.emoji}</div>
+      <div class="leaderboard-info">
+        <div class="leaderboard-name">${item.name}</div>
+        <div class="leaderboard-detail">已掌握 ${item.learned} 个知识点</div>
+      </div>
+      <div class="leaderboard-stars">⭐ ${item.stars}</div>
+    </div>
+  `).join('');
+}
+
+function refreshLeaderboard() {
+  renderLeaderboard();
+}
+
+function renderActivities() {
+  // 收集所有孩子的动态
+  let allActivities = [];
+  children.forEach(child => {
+    const data = getChildData(child.id);
+    data.activities.forEach(act => {
+      allActivities.push({ ...act, childName: child.name, childEmoji: child.emoji });
+    });
+  });
+  
+  // 按时间排序，取最近10条
+  allActivities.sort((a, b) => new Date(b.time) - new Date(a.time));
+  allActivities = allActivities.slice(0, 10);
+  
+  const container = document.getElementById('activityList');
+  
+  if (allActivities.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state" style="padding: 32px;">
+        <div class="empty-icon">📭</div>
+        <div class="empty-title">暂无动态</div>
+        <div class="empty-desc">孩子们开始学习后会显示在这里</div>
+      </div>
+    `;
+    return;
+  }
+  
+  container.innerHTML = allActivities.map(act => {
+    const timeAgo = getTimeAgo(act.time);
+    return `
+      <div class="activity-item">
+        <div class="activity-icon">${act.icon || '📚'}</div>
+        <div class="activity-content">
+          <div class="activity-text">
+            <strong>${act.childEmoji} ${act.childName}</strong> ${act.text}
+          </div>
+          <div class="activity-time">${timeAgo}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function getTimeAgo(time) {
+  const now = new Date();
+  const date = new Date(time);
+  const diff = now - date;
+  const minutes = Math.floor(diff / 60000);
+  const hours = Math.floor(diff / 3600000);
+  const days = Math.floor(diff / 86400000);
+  
+  if (minutes < 1) return '刚刚';
+  if (minutes < 60) return `${minutes}分钟前`;
+  if (hours < 24) return `${hours}小时前`;
+  if (days < 7) return `${days}天前`;
+  return date.toLocaleDateString('zh-CN');
+}
+
+// 鼓励系统
+function quickEncourage(target, message) {
+  document.getElementById('customEncourage').value = message;
+}
+
+function sendEncouragement() {
+  const text = document.getElementById('customEncourage').value.trim();
+  if (!text) {
+    alert('请输入鼓励的内容');
+    return;
+  }
+  
+  const encouragement = {
+    text,
+    from: '爸爸',
+    time: new Date().toISOString()
+  };
+  
+  // 发给所有孩子
+  children.forEach(child => {
+    const data = getChildData(child.id);
+    data.encouragement = encouragement;
+    saveChildData(child.id, data);
+    
+    // 添加动态
+    data.activities.unshift({
+      type: 'encouragement',
+      text: '收到了爸爸的鼓励 💝',
+      icon: '💌',
+      time: new Date().toISOString()
+    });
+    data.activities = data.activities.slice(0, 50);
+    saveChildData(child.id, data);
+  });
+  
+  document.getElementById('customEncourage').value = '';
+  alert('鼓励已发送！💝');
+  
+  // 刷新动态
+  renderActivities();
+}
+
+// ========== 孩子视角 ==========
+function renderKidView() {
+  const child = children[currentChildIndex];
+  const data = getChildData(child.id);
+  const age = getAge(child.birthYear);
+  
+  // 欢迎卡片
+  const welcomeCard = document.getElementById('kidWelcome');
+  welcomeCard.style.background = child.gradient;
+  document.getElementById('kidWelcomeEmoji').textContent = child.emoji;
+  
+  const hour = new Date().getHours();
+  let greeting = '下午好';
+  if (hour < 12) greeting = '早上好';
+  else if (hour >= 18) greeting = '晚上好';
+  document.getElementById('kidWelcomeText').textContent = `${greeting}，${child.name}！`;
+  
+  // 统计
+  document.getElementById('kidStatLearned').textContent = data.learnedTopics.length;
+  document.getElementById('kidStatStars').textContent = data.stars;
+  document.getElementById('kidStatDay').textContent = data.streak + '天';
+  
+  // 爸爸的鼓励
+  const encSection = document.getElementById('encouragementSection');
+  if (data.encouragement) {
+    encSection.style.display = 'block';
+    document.getElementById('encouragementText').textContent = data.encouragement.text;
+    document.getElementById('encouragementTime').textContent = getTimeAgo(data.encouragement.time);
+  } else {
+    encSection.style.display = 'none';
+  }
+  
+  // 鸣川显示周末冲刺
+  document.getElementById('weekendSection').style.display = child.id === 'mingchuan' ? 'block' : 'none';
+  
+  // 今日推荐
+  renderTodayRecommendations();
+  
+  // 默认导航到首页
+  navigateTo('home');
+}
+
+function renderTodayRecommendations() {
+  const child = children[currentChildIndex];
+  const age = getAge(child.birthYear);
+  const data = getChildData(child.id);
+  const learned = data.learnedTopics;
+  
+  // 适合年龄且未掌握
+  const ageAppropriate = topicsData.filter(t => 
+    t.ageRangeStart <= age && t.ageRangeEnd >= age && !learned.includes(t.id)
+  );
+  
+  // 优先推荐前置知识已掌握的
+  const readyToLearn = ageAppropriate.filter(topic => {
+    const prereqs = depsData.filter(d => d.topicId === topic.id && d.strength === 'hard');
+    return prereqs.every(p => learned.includes(p.prerequisiteId));
+  });
+
+  let recommendations = [];
+  if (readyToLearn.length >= 5) {
+    recommendations = readyToLearn
+      .sort((a, b) => b.centrality - a.centrality)
+      .slice(0, 5);
+  } else {
+    recommendations = [
+      ...readyToLearn,
+      ...ageAppropriate
+        .filter(t => !readyToLearn.find(r => r.id === t.id))
+        .sort((a, b) => b.centrality - a.centrality)
+        .slice(0, 5 - readyToLearn.length)
+    ];
+  }
+
+  const container = document.getElementById('todayList');
+  
+  if (recommendations.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">🎉</div>
+        <div class="empty-title">太棒了！</div>
+        <div class="empty-desc">你已经掌握了这个年龄段的知识点<br>去知识图谱探索更多吧！</div>
+      </div>
+    `;
+  } else {
+    container.innerHTML = recommendations.map((topic, index) => `
+      <div class="today-item" onclick="openTopicDetail('${topic.id}')">
+        <div class="today-item-icon" style="background: ${subjectColors[topic.subject]}20;">
+          ${subjectEmojis[topic.subject] || '📚'}
+        </div>
+        <div class="today-item-content">
+          <div class="today-item-title">${index + 1}. ${topic.name}</div>
+          <div class="today-item-desc">${topic.description}</div>
+          <div class="today-item-meta">
+            <span class="subject-tag" style="background: ${subjectColors[topic.subject]}">${topic.subject}</span>
+            <span class="age-tag">${topic.ageRangeStart}-${topic.ageRangeEnd}岁</span>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+}
+
+// ========== 知识图谱 ==========
+function renderSubjectChips() {
+  const subjects = [...new Set(topicsData.map(t => t.subject))];
+  const container = document.getElementById('subjectChips');
+  container.innerHTML = `
+    <div class="filter-chip active" data-subject="">全部学科</div>
+    ${subjects.map(s => `<div class="filter-chip" data-subject="${s}">${subjectEmojis[s] || '📚'} ${s}</div>`).join('')}
+  `;
+  
+  // 绑定事件
+  container.querySelectorAll('.filter-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      container.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      graphPageNum = 1;
+      loadTopics();
+    });
+  });
+}
+
+document.getElementById('ageChips').addEventListener('click', (e) => {
+  if (e.target.classList.contains('filter-chip')) {
+    document.querySelectorAll('#ageChips .filter-chip').forEach(c => c.classList.remove('active'));
+    e.target.classList.add('active');
+    graphPageNum = 1;
+    loadTopics();
+  }
+});
+
+document.getElementById('searchInput').addEventListener('input', () => {
+  graphPageNum = 1;
+  loadTopics();
+});
+
+function getFilteredTopics() {
+  const search = document.getElementById('searchInput').value.toLowerCase();
+  const subjectChip = document.querySelector('#subjectChips .filter-chip.active');
+  const subject = subjectChip ? subjectChip.dataset.subject : '';
+  const ageChip = document.querySelector('#ageChips .filter-chip.active');
+  const ageRange = ageChip ? ageChip.dataset.age : '';
+
+  return topicsData.filter(topic => {
+    if (search && !topic.name.toLowerCase().includes(search) && 
+        !topic.description.toLowerCase().includes(search)) return false;
+    if (subject && topic.subject !== subject) return false;
+    if (ageRange) {
+      if (ageRange === '12+') {
+        if (topic.ageRangeEnd < 12) return false;
+      } else {
+        const [start, end] = ageRange.split('-').map(Number);
+        if (topic.ageRangeStart > end || topic.ageRangeEnd < start) return false;
+      }
+    }
+    return true;
+  }).sort((a, b) => a.ageRangeStart - b.ageRangeStart);
+}
+
+function loadTopics() {
+  const filtered = getFilteredTopics();
+  const start = 0;
+  const end = graphPageNum * graphPageSize;
+  const pageTopics = filtered.slice(start, end);
+  
+  const container = document.getElementById('topicsList');
+  
+  if (pageTopics.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">🔍</div>
+        <div class="empty-title">没有找到相关知识点</div>
+        <div class="empty-desc">试试其他搜索词或筛选条件</div>
+      </div>
+    `;
+    document.getElementById('loadMoreArea').style.display = 'none';
+    return;
+  }
+  
+  container.innerHTML = pageTopics.map(topic => {
+    const learned = currentRole === 'child' ? isTopicLearned(topic.id) : false;
+    return `
+      <div class="topic-card ${learned ? 'learned' : ''}" onclick="openTopicDetail('${topic.id}')">
+        <div class="topic-card-header">
+          <div class="topic-card-title">${topic.name}</div>
+          <span class="subject-tag" style="background: ${subjectColors[topic.subject]}; font-size: 11px;">${topic.subject}</span>
+        </div>
+        <div class="topic-card-desc">${topic.description}</div>
+        <div class="topic-card-footer">
+          <div class="topic-card-tags">
+            <span class="badge badge-amber">${topic.ageRangeStart}-${topic.ageRangeEnd}岁</span>
+            ${learned ? '<span class="badge badge-green">已掌握</span>' : ''}
+          </div>
+          ${learned ? '<div class="topic-card-status">✓</div>' : ''}
+        </div>
+      </div>
+    `;
+  }).join('');
+  
+  // 加载更多
+  const loadMoreArea = document.getElementById('loadMoreArea');
+  if (end >= filtered.length) {
+    loadMoreArea.textContent = '— 到底啦 —';
+    loadMoreArea.style.cursor = 'default';
+  } else {
+    loadMoreArea.textContent = '加载更多 ▼';
+    loadMoreArea.style.cursor = 'pointer';
+    loadMoreArea.onclick = loadMoreTopics;
+  }
+}
+
+function loadMoreTopics() {
+  if (isLoadingTopics) return;
+  isLoadingTopics = true;
+  graphPageNum++;
+  loadTopics();
+  setTimeout(() => { isLoadingTopics = false; }, 300);
+}
+
+function isTopicLearned(topicId) {
+  const child = children[currentChildIndex];
+  const data = getChildData(child.id);
+  return data.learnedTopics.includes(topicId);
+}
+
+// ========== 话题详情 ==========
+function openTopicDetail(topicId) {
+  currentTopicId = topicId;
+  const topic = topicsData.find(t => t.id === topicId);
+  if (!topic) return;
+
+  document.getElementById('modalTopicName').textContent = topic.name;
+  
+  const tagsContainer = document.getElementById('modalTopicTags');
+  tagsContainer.innerHTML = `
+    <span class="subject-tag" style="background: ${subjectColors[topic.subject]}">${subjectEmojis[topic.subject] || ''} ${topic.subject}</span>
+    <span class="badge badge-amber">${topic.ageRangeStart}-${topic.ageRangeEnd}岁</span>
+    ${isTopicLearned(topicId) ? '<span class="badge badge-green">✓ 已掌握</span>' : ''}
+  `;
+
+  document.getElementById('modalTopicDesc').textContent = topic.description;
+
+  // 掌握标准
+  const evidenceList = document.getElementById('modalEvidence');
+  evidenceList.innerHTML = topic.evidence.map(e => `<li>${e}</li>`).join('');
+
+  // 前置知识
+  const prereqs = depsData.filter(d => d.topicId === topicId);
+  const prereqList = document.getElementById('modalPrereqs');
+  if (prereqs.length === 0) {
+    prereqList.innerHTML = '<div style="color: var(--text-tertiary); font-size: 13px; padding: 12px; text-align: center;">这是基础知识点，没有前置要求 🌟</div>';
+  } else {
+    prereqList.innerHTML = prereqs.map(p => {
+      const prereqTopic = topicsData.find(t => t.id === p.prerequisiteId);
+      if (!prereqTopic) return '';
+      const learned = isTopicLearned(p.prerequisiteId);
+      return `<div class="prereq-item ${learned ? 'learned' : ''}" onclick="openTopicDetail('${p.prerequisiteId}')">
+        ${prereqTopic.name}
+        <div style="font-size: 11px; color: var(--text-tertiary); margin-left: auto;">${p.reason}</div>
+      </div>`;
+    }).join('');
+  }
+
+  // 学完可以学
+  const unlocks = depsData.filter(d => d.prerequisiteId === topicId);
+  const unlockList = document.getElementById('modalUnlocks');
+  if (unlocks.length === 0) {
+    unlockList.innerHTML = '<div style="color: var(--text-tertiary); font-size: 13px; padding: 12px; text-align: center;">这是该领域的高阶知识点 🎯</div>';
+  } else {
+    unlockList.innerHTML = unlocks.map(u => {
+      const unlockTopic = topicsData.find(t => t.id === u.topicId);
+      if (!unlockTopic) return '';
+      const learned = isTopicLearned(u.topicId);
+      return `<div class="prereq-item ${learned ? 'learned' : ''}" onclick="openTopicDetail('${u.topicId}')">
+        ${unlockTopic.name}
+      </div>`;
+    }).join('');
+  }
+
+  // 按钮状态
+  const btn = document.getElementById('markLearnedBtn');
+  const learned = isTopicLearned(topicId);
+  btn.textContent = learned ? '↩️ 取消掌握' : '✅ 标记为已掌握';
+  btn.className = learned ? 'btn btn-secondary' : 'btn btn-primary';
+
+  document.getElementById('topicModal').classList.add('active');
+}
+
+function closeTopicModal() {
+  document.getElementById('topicModal').classList.remove('active');
+  currentTopicId = null;
+}
+
+function toggleLearned() {
+  if (!currentTopicId) return;
+  if (currentRole !== 'child') {
+    alert('请切换到孩子视角来标记掌握状态');
+    return;
+  }
+  
+  const child = children[currentChildIndex];
+  const data = getChildData(child.id);
+  const topic = topicsData.find(t => t.id === currentTopicId);
+  const learned = data.learnedTopics.includes(currentTopicId);
+  
+  if (learned) {
+    // 取消掌握
+    data.learnedTopics = data.learnedTopics.filter(id => id !== currentTopicId);
+    data.stars = Math.max(0, data.stars - 5);
+  } else {
+    // 标记掌握
+    data.learnedTopics.push(currentTopicId);
+    data.stars += 10; // 每个知识点10颗星
+    
+    // 更新连续学习
+    const today = new Date().toDateString();
+    if (data.lastLearnDate !== today) {
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      if (data.lastLearnDate === yesterday.toDateString()) {
+        data.streak++;
+      } else {
+        data.streak = 1;
+      }
+      data.lastLearnDate = today;
+    }
+    
+    // 添加动态
+    data.activities.unshift({
+      type: 'learn',
+      text: `掌握了「${topic.name}」`,
+      icon: '✨',
+      time: new Date().toISOString()
+    });
+    data.activities = data.activities.slice(0, 50);
+  }
+  
+  saveChildData(child.id, data);
+  
+  // 刷新
+  openTopicDetail(currentTopicId);
+  renderKidView();
+  
+  if (!learned) {
+    // 星星动画
+    showStarEffect();
+  }
+}
+
+function showStarEffect() {
+  // 简单的提示
+  const toast = document.createElement('div');
+  toast.style.cssText = `
+    position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    background: rgba(0,0,0,0.8); color: white; padding: 16px 24px; border-radius: 12px;
+    font-size: 18px; z-index: 9999; animation: starPop 0.5s ease-out;
+  `;
+  toast.innerHTML = '⭐ +10 太棒了！';
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 1500);
+}
+
+// ========== AI 问答 ==========
+function quickQuestion(q) {
+  document.getElementById('chatInput').value = q;
+  sendMessage();
+}
+
+function addChatMessage(content, isUser = false) {
+  const container = document.getElementById('chatMessages');
+  const child = children[currentChildIndex];
+  
+  const msgDiv = document.createElement('div');
+  msgDiv.className = `chat-msg ${isUser ? 'user' : 'ai'}`;
+  msgDiv.innerHTML = `
+    <div class="chat-avatar">${isUser ? child.emoji : '🤖'}</div>
+    <div class="chat-bubble">${content.replace(/\n/g, '<br>')}</div>
+  `;
+  container.appendChild(msgDiv);
+  container.scrollTop = container.scrollHeight;
+}
+
+function addTypingIndicator() {
+  const container = document.getElementById('chatMessages');
+  const div = document.createElement('div');
+  div.className = 'chat-msg ai';
+  div.id = 'typingIndicator';
+  div.innerHTML = `
+    <div class="chat-avatar">🤖</div>
+    <div class="chat-bubble">
+      <div class="typing-indicator">
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+      </div>
+    </div>
+  `;
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+}
+
+function removeTypingIndicator() {
+  const indicator = document.getElementById('typingIndicator');
+  if (indicator) indicator.remove();
+}
+
+async function sendMessage() {
+  const input = document.getElementById('chatInput');
+  const message = input.value.trim();
+  if (!message) return;
+
+  const settings = getSettings();
+  if (!settings.apiKey) {
+    addChatMessage('请先在「设置」中配置豆包 API Key 才能使用 AI 问答功能哦！', false);
+    return;
+  }
+
+  addChatMessage(message, true);
+  input.value = '';
+  input.style.height = 'auto';
+
+  addTypingIndicator();
+  document.getElementById('sendBtn').disabled = true;
+
+  try {
+    const relatedTopics = searchRelatedTopics(message);
+    const context = buildContext(relatedTopics);
+    const child = children[currentChildIndex];
+    const age = getAge(child.birthYear);
+
+    const systemPrompt = `你是一位亲切、有耐心的AI辅导老师，名叫"小豆老师"。
+你正在辅导一个${age}岁的孩子（${child.name}）。
+请用简单易懂、生动有趣的语言回答问题，适合${age}岁孩子的理解水平。
+回答要鼓励孩子，激发学习兴趣，多用比喻和例子。
+回答控制在300字以内，分点说明会更清楚。
+如果是题目，先讲解思路，再给出答案。
+
+相关知识点参考：
+${context}`;
+
+    const response = await callDoubaoAPI(settings.apiKey, settings.model, systemPrompt, message);
+    removeTypingIndicator();
+    addChatMessage(response, false);
+  } catch (error) {
+    removeTypingIndicator();
+    addChatMessage(`抱歉，出了点小问题：${error.message}\n请检查 API Key 是否正确。`, false);
+  }
+
+  document.getElementById('sendBtn').disabled = false;
+}
+
+function searchRelatedTopics(query) {
+  const keywords = query.toLowerCase().split(/\s+/);
+  return topicsData
+    .filter(topic => {
+      const text = (topic.name + ' ' + topic.description).toLowerCase();
+      return keywords.some(kw => text.includes(kw));
+    })
+    .sort((a, b) => b.centrality - a.centrality)
+    .slice(0, 3);
+}
+
+function buildContext(topics) {
+  if (topics.length === 0) return '（无直接相关的知识点）';
+  return topics.map(t => {
+    const prereqs = depsData.filter(d => d.topicId === t.id).slice(0, 2).map(d => {
+      const pTopic = topicsData.find(pt => pt.id === d.prerequisiteId);
+      return pTopic ? `- 前置：${pTopic.name}` : '';
+    }).filter(Boolean).join('\n');
+    return `【${t.name}】
+  学科：${t.subject}
+  简介：${t.description}
+${prereqs}`;
+  }).join('\n\n');
+}
+
+async function callDoubaoAPI(apiKey, model, systemPrompt, userMessage) {
+  const endpoint = 'https://ark.cn-beijing.volces.com/api/v3/chat/completions';
+  
+  const response = await fetch(endpoint, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${apiKey}`
+    },
+    body: JSON.stringify({
+      model: model,
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: userMessage }
+      ],
+      temperature: 0.7,
+      max_tokens: 800
+    })
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({}));
+    throw new Error(error.error?.message || `API 请求失败 (${response.status})`);
+  }
+
+  const data = await response.json();
+  return data.choices?.[0]?.message?.content || '抱歉，我没有理解你的问题。';
+}
+
+function askAIAboutTopic() {
+  if (!currentTopicId) return;
+  const topic = topicsData.find(t => t.id === currentTopicId);
+  if (!topic) return;
+  
+  closeTopicModal();
+  navigateTo('chat');
+  
+  setTimeout(() => {
+    document.getElementById('chatInput').value = `请给我讲一讲「${topic.name}」，用我能听懂的话`;
+    sendMessage();
+  }, 300);
+}
+
+// ========== 学习进度页 ==========
+function renderProgressPage() {
+  const child = children[currentChildIndex];
+  const data = getChildData(child.id);
+  const learned = data.learnedTopics;
+  const learnedTopics = topicsData.filter(t => learned.includes(t.id));
+  const total = topicsData.length;
+  const percent = Math.round((learned.length / total) * 100);
+
+  // 进度环
+  const circle = document.getElementById('progressCircle');
+  circle.style.background = `conic-gradient(var(--primary) ${percent}%, var(--bg-secondary) 0%)`;
+  document.getElementById('progressPercent').textContent = percent + '%';
+  
+  document.getElementById('totalLearned').textContent = learned.length;
+  document.getElementById('totalStars').textContent = data.stars;
+
+  // 各学科进度
+  const subjects = [...new Set(topicsData.map(t => t.subject))];
+  const list = document.getElementById('subjectProgressList');
+  list.innerHTML = subjects.map(subject => {
+    const all = topicsData.filter(t => t.subject === subject);
+    const learnedSub = all.filter(t => learned.includes(t.id));
+    const subPercent = all.length > 0 ? Math.round((learnedSub.length / all.length) * 100) : 0;
+    return `
+      <div class="subject-progress-item">
+        <div class="subject-progress-icon" style="background: ${subjectColors[subject]}20;">
+          ${subjectEmojis[subject] || '📚'}
+        </div>
+        <div class="subject-progress-info">
+          <div class="subject-progress-name">
+            <span>${subject}</span>
+            <span>${subPercent}%</span>
+          </div>
+          <div class="subject-progress-bar">
+            <div class="subject-progress-fill" style="width: ${subPercent}%; background: ${subjectColors[subject]};"></div>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  // 最近掌握
+  const recentContainer = document.getElementById('recentLearned');
+  if (learnedTopics.length === 0) {
+    recentContainer.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">🌱</div>
+        <div class="empty-title">还没有掌握的知识点</div>
+        <div class="empty-desc">开始学习后会显示在这里</div>
+      </div>
+    `;
+  } else {
+    const recent = learnedTopics.slice(-5).reverse();
+    recentContainer.innerHTML = recent.map(topic => `
+      <div class="topic-card learned" onclick="openTopicDetail('${topic.id}')">
+        <div class="topic-card-header">
+          <div class="topic-card-title">${topic.name}</div>
+          <span class="subject-tag" style="background: ${subjectColors[topic.subject]}; font-size: 11px;">${topic.subject}</span>
+        </div>
+        <div class="topic-card-desc">${topic.description.substring(0, 60)}...</div>
+      </div>
+    `).join('');
+  }
+}
+
+// ========== 设置页 ==========
+function updateSettingsDisplay() {
+  const settings = getSettings();
+  document.getElementById('apiKeyStatus').textContent = settings.apiKey ? '已配置 ✓' : '未配置';
+  const modelNames = {
+    'doubao-seed-1-6-flash-250828': '豆包 Seed 1.6 Flash',
+    'doubao-pro-4k': '豆包 Pro 4K',
+    'doubao-pro-32k': '豆包 Pro 32K',
+    'doubao-lite-4k': '豆包 Lite 4K'
+  };
+  document.getElementById('modelName').textContent = modelNames[settings.model] || settings.model;
+}
+
+function showSettings() {
+  navigateTo('settings');
+}
+
+function showApiSettings() {
+  const settings = getSettings();
+  document.getElementById('settingsModalTitle').textContent = 'API Key 设置';
+  document.getElementById('settingsModalBody').innerHTML = `
+    <div class="form-group">
+      <label class="form-label">豆包 API Key</label>
+      <input type="password" class="form-input" id="apiKeyInput" value="${settings.apiKey}" placeholder="请输入 API Key">
+      <div class="form-hint">在火山引擎控制台获取，用于 AI 问答功能</div>
+    </div>
+    <button class="btn btn-primary" style="width: 100%; padding: 14px;" onclick="saveApiKey()">保存</button>
+  `;
+  document.getElementById('settingsModal').classList.add('active');
+}
+
+function saveApiKey() {
+  const settings = getSettings();
+  settings.apiKey = document.getElementById('apiKeyInput').value.trim();
+  saveSettings(settings);
+  closeSettingsModal();
+  updateSettingsDisplay();
+  alert('保存成功！');
+}
+
+function showModelSettings() {
+  const settings = getSettings();
+  document.getElementById('settingsModalTitle').textContent = '选择模型';
+  document.getElementById('settingsModalBody').innerHTML = `
+    <div class="form-group">
+      <label class="form-label">AI 模型</label>
+      <select class="form-select" id="modelSelect">
+        <option value="doubao-seed-1-6-flash-250828" ${settings.model === 'doubao-seed-1-6-flash-250828' ? 'selected' : ''}>豆包 Seed 1.6 Flash（推荐，免费额度多）</option>
+        <option value="doubao-pro-4k" ${settings.model === 'doubao-pro-4k' ? 'selected' : ''}>豆包 Pro 4K（更聪明）</option>
+        <option value="doubao-pro-32k" ${settings.model === 'doubao-pro-32k' ? 'selected' : ''}>豆包 Pro 32K（长文本）</option>
+        <option value="doubao-lite-4k" ${settings.model === 'doubao-lite-4k' ? 'selected' : ''}>豆包 Lite 4K（轻量）</option>
+      </select>
+    </div>
+    <button class="btn btn-primary" style="width: 100%; padding: 14px;" onclick="saveModel()">保存</button>
+  `;
+  document.getElementById('settingsModal').classList.add('active');
+}
+
+function saveModel() {
+  const settings = getSettings();
+  settings.model = document.getElementById('modelSelect').value;
+  saveSettings(settings);
+  closeSettingsModal();
+  updateSettingsDisplay();
+  alert('保存成功！');
+}
+
+function showPasswordSettings() {
+  document.getElementById('settingsModalTitle').textContent = '修改密码';
+  document.getElementById('settingsModalBody').innerHTML = `
+    <div class="form-group">
+      <label class="form-label">当前密码</label>
+      <input type="password" class="form-input" id="oldPassword" placeholder="请输入当前密码">
+    </div>
+    <div class="form-group">
+      <label class="form-label">新密码</label>
+      <input type="password" class="form-input" id="newPassword" placeholder="请输入新密码（6位数字）" maxlength="6" inputmode="numeric">
+    </div>
+    <div class="form-group">
+      <label class="form-label">确认新密码</label>
+      <input type="password" class="form-input" id="confirmPassword" placeholder="请再次输入新密码" maxlength="6" inputmode="numeric">
+    </div>
+    <button class="btn btn-primary" style="width: 100%; padding: 14px;" onclick="savePassword()">修改密码</button>
+  `;
+  document.getElementById('settingsModal').classList.add('active');
+}
+
+function savePassword() {
+  const settings = getSettings();
+  const oldPwd = document.getElementById('oldPassword').value;
+  const newPwd = document.getElementById('newPassword').value;
+  const confirmPwd = document.getElementById('confirmPassword').value;
+  
+  if (oldPwd !== settings.password) {
+    alert('当前密码错误');
+    return;
+  }
+  if (newPwd.length !== 6 || !/^\d+$/.test(newPwd)) {
+    alert('请输入6位数字密码');
+    return;
+  }
+  if (newPwd !== confirmPwd) {
+    alert('两次输入的新密码不一致');
+    return;
+  }
+  
+  settings.password = newPwd;
+  saveSettings(settings);
+  closeSettingsModal();
+  alert('密码修改成功！');
+}
+
+function closeSettingsModal() {
+  document.getElementById('settingsModal').classList.remove('active');
+}
+
+function exportData() {
+  const data = {
+    settings: getSettings(),
+    children: children.map(child => ({
+      id: child.id,
+      name: child.name,
+      data: getChildData(child.id)
+    })),
+    exportDate: new Date().toISOString()
+  };
+  
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `星光学堂_备份_${new Date().toLocaleDateString()}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function clearAllData() {
+  if (!confirm('确定要清除所有数据吗？此操作不可恢复！')) return;
+  if (!confirm('真的确定吗？所有学习记录都会消失！')) return;
+  
+  children.forEach(child => {
+    localStorage.removeItem(`starlight_${child.id}`);
+  });
+  localStorage.removeItem('starlight_settings');
+  
+  alert('数据已清除，即将刷新...');
+  location.reload();
+}
+
+// ========== 数据加载 ==========
+async function loadData() {
+  try {
+    const [topicsRes, depsRes] = await Promise.all([
+      fetch('data/topics.json'),
+      fetch('data/dependencies.json')
+    ]);
+    const topicsJson = await topicsRes.json();
+    const depsJson = await depsRes.json();
+    topicsData = topicsJson.topics;
+    depsData = depsJson.dependencies;
+    console.log(`数据加载成功: ${topicsData.length} 话题, ${depsData.length} 依赖`);
+  } catch (e) {
+    console.error('数据加载失败:', e);
+  }
+}
+
+// 输入框自动高度
+document.addEventListener('input', function(e) {
+  if (e.target.id === 'chatInput') {
+    e.target.style.height = 'auto';
+    e.target.style.height = Math.min(e.target.scrollHeight, 120) + 'px';
+  }
+});
+
+// 回车发送
+document.addEventListener('keydown', function(e) {
+  if (e.target.id === 'chatInput' && e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+});
+
+// 点击模态框外部关闭
+document.getElementById('topicModal').addEventListener('click', (e) => {
+  if (e.target.id === 'topicModal') closeTopicModal();
+});
+
+document.getElementById('settingsModal').addEventListener('click', (e) => {
+  if (e.target.id === 'settingsModal') closeSettingsModal();
+});
+
+// 启动
+loadData();
+</script>
+</body>
+</html>
