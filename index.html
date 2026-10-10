@@ -1564,6 +1564,92 @@ body {
   margin-top: 6px;
 }
 
+/* ========== TTS 设置页面 ========== */
+.tts-settings-section {
+  margin-bottom: 22px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.tts-settings-section:last-of-type {
+  border-bottom: none;
+  margin-bottom: 16px;
+  padding-bottom: 0;
+}
+
+.tts-section-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 10px;
+}
+
+.tts-voice-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.tts-voice-select {
+  flex: 1;
+}
+
+.tts-refresh-btn {
+  padding: 10px 14px !important;
+  font-size: 16px !important;
+  width: auto !important;
+  flex-shrink: 0;
+}
+
+.tts-slider {
+  width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--border);
+  outline: none;
+}
+
+.tts-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--primary);
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(217, 119, 6, 0.3);
+}
+
+.tts-slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--primary);
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 2px 6px rgba(217, 119, 6, 0.3);
+}
+
+.tts-slider-display {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--text-tertiary);
+  margin-top: 6px;
+}
+
+.tts-test-btn {
+  padding: 4px 12px !important;
+  font-size: 12px !important;
+  width: auto !important;
+  border-radius: var(--radius-sm) !important;
+}
+
 /* ========== 幼儿模式 UI ========== */
 body.kid-mode .chat-bubble {
   font-size: 16px;
@@ -2864,6 +2950,9 @@ function getSettings() {
     password: '123456',
     ttsAutoRead: false,
     ttsRate: 0.9,
+    ttsPitch: 1.0,
+    ttsVolume: 1.0,
+    ttsVoice: '',
     kidMode: false
   };
   const settings = data ? { ...defaults, ...JSON.parse(data) } : defaults;
@@ -3840,42 +3929,102 @@ ${context}`;
 let currentSpeakingMsgId = null;
 let speechSynthesisSupported = 'speechSynthesis' in window;
 
-function speakText(text, msgId) {
-  if (!speechSynthesisSupported) return;
+// 获取中文语音列表
+function getChineseVoices() {
+  if (!speechSynthesisSupported) return [];
+  const allVoices = window.speechSynthesis.getVoices();
+  const zhVoices = allVoices.filter(v => v.lang.startsWith('zh') || v.lang.includes('CN') || v.lang.includes('zh-'));
+  return zhVoices.length > 0 ? zhVoices : allVoices;
+}
+
+// 自动选择最佳中文语音（优先女声）
+function getBestChineseVoice() {
+  const voices = getChineseVoices();
+  if (voices.length === 0) return null;
   
-  // 停止之前的朗读
-  stopSpeaking();
+  // 优先选择的语音名称关键词（常见中文女声）
+  const preferredNames = ['xiaoxiao', 'yaoyao', 'xiaoyi', '晓晓', '瑶瑶', '晓伊', 'xiaohan', '晓涵', 'yunxi', '云希', 'yunjian', '云健'];
   
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = 'zh-CN';
-  const settings = getSettings();
-  utterance.rate = settings.ttsRate || 0.9;
-  utterance.pitch = 1.0;
-  utterance.volume = 1.0;
-  
-  // 尝试选择中文语音
-  const voices = window.speechSynthesis.getVoices();
-  const zhVoice = voices.find(v => v.lang.startsWith('zh') || v.lang.includes('CN'));
-  if (zhVoice) {
-    utterance.voice = zhVoice;
+  // 先尝试匹配首选名称
+  for (const keyword of preferredNames) {
+    const found = voices.find(v => v.name.toLowerCase().includes(keyword.toLowerCase()));
+    if (found) return found;
   }
   
-  utterance.onstart = () => {
-    currentSpeakingMsgId = msgId;
-    updateTtsButtonState(msgId, true);
-  };
+  // 其次选择 zh-CN 的女声（通常名称包含 female 或常见女性名字）
+  const zhCNVoices = voices.filter(v => v.lang === 'zh-CN' || v.lang.startsWith('zh-CN'));
+  if (zhCNVoices.length > 0) {
+    // 尝试找女声
+    const femaleVoice = zhCNVoices.find(v => 
+      v.name.toLowerCase().includes('female') || 
+      v.name.toLowerCase().includes('woman') ||
+      v.name.toLowerCase().includes('girl')
+    );
+    if (femaleVoice) return femaleVoice;
+    return zhCNVoices[0];
+  }
   
-  utterance.onend = () => {
-    updateTtsButtonState(msgId, false);
-    currentSpeakingMsgId = null;
-  };
+  return voices[0];
+}
+
+// 根据设置获取当前语音
+function getSelectedVoice() {
+  const settings = getSettings();
+  const voices = getChineseVoices();
   
-  utterance.onerror = () => {
-    updateTtsButtonState(msgId, false);
-    currentSpeakingMsgId = null;
-  };
+  if (settings.ttsVoice) {
+    const saved = voices.find(v => v.name === settings.ttsVoice);
+    if (saved) return saved;
+  }
   
-  window.speechSynthesis.speak(utterance);
+  // 没有保存的语音或已保存的语音不可用，使用最佳语音
+  return getBestChineseVoice();
+}
+
+function speakText(text, msgId) {
+  if (!speechSynthesisSupported) return;
+  if (!text || !text.trim()) return;
+  
+  try {
+    // 停止之前的朗读
+    stopSpeaking();
+    
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'zh-CN';
+    const settings = getSettings();
+    utterance.rate = settings.ttsRate || 0.9;
+    utterance.pitch = settings.ttsPitch || 1.0;
+    utterance.volume = settings.ttsVolume !== undefined ? settings.ttsVolume : 1.0;
+    
+    // 选择语音
+    const selectedVoice = getSelectedVoice();
+    if (selectedVoice) {
+      utterance.voice = selectedVoice;
+      if (selectedVoice.lang) {
+        utterance.lang = selectedVoice.lang;
+      }
+    }
+    
+    utterance.onstart = () => {
+      currentSpeakingMsgId = msgId;
+      updateTtsButtonState(msgId, true);
+    };
+    
+    utterance.onend = () => {
+      updateTtsButtonState(msgId, false);
+      currentSpeakingMsgId = null;
+    };
+    
+    utterance.onerror = (event) => {
+      console.warn('TTS 朗读出错:', event.error || event);
+      updateTtsButtonState(msgId, false);
+      currentSpeakingMsgId = null;
+    };
+    
+    window.speechSynthesis.speak(utterance);
+  } catch (e) {
+    console.error('TTS 朗读失败:', e);
+  }
 }
 
 function stopSpeaking() {
@@ -4328,7 +4477,11 @@ function updateSettingsDisplay() {
   // TTS 状态
   const ttsStatusEl = document.getElementById('ttsStatus');
   if (ttsStatusEl) {
-    ttsStatusEl.textContent = settings.ttsAutoRead ? `自动朗读 · ${settings.ttsRate}x` : '已关闭';
+    if (settings.ttsAutoRead) {
+      ttsStatusEl.textContent = `自动朗读 · ${settings.ttsRate}x`;
+    } else {
+      ttsStatusEl.textContent = '已关闭';
+    }
   }
   
   // 幼儿模式开关状态
@@ -4599,15 +4752,22 @@ function showTtsSettings() {
   const settings = getSettings();
   document.getElementById('settingsModalTitle').textContent = '语音朗读设置';
   document.getElementById('settingsModalBody').innerHTML = `
-    <div class="form-group">
-      <div style="display: flex; justify-content: space-between; align-items: center;">
-        <label class="form-label" style="margin-bottom: 0;">AI回答自动朗读</label>
-        <div class="toggle-switch ${settings.ttsAutoRead ? 'active' : ''}" id="ttsAutoToggle" onclick="toggleTtsAuto()"></div>
+    <div class="tts-settings-section">
+      <div class="tts-section-title">🎙️ 语音选择</div>
+      <div class="tts-voice-row">
+        <select class="form-select tts-voice-select" id="ttsVoiceSelect">
+          <option value="">加载中...</option>
+        </select>
+        <button class="btn btn-secondary tts-refresh-btn" onclick="refreshVoiceList()" title="刷新语音列表">🔄</button>
       </div>
-      <div class="form-hint">开启后，AI的回答会自动朗读出来</div>
+      <div class="form-hint">选择你喜欢的朗读声音，优先显示中文语音</div>
     </div>
-    <div class="form-group">
-      <label class="form-label">朗读语速</label>
+
+    <div class="tts-settings-section">
+      <div class="tts-section-title">
+        <span>⚡ 朗读语速</span>
+        <button class="btn btn-secondary tts-test-btn" onclick="testTtsRate()">试听</button>
+      </div>
       <input type="range" class="speech-rate-slider" id="ttsRateSlider" 
         min="0.5" max="1.5" step="0.1" value="${settings.ttsRate}"
         oninput="updateTtsRateDisplay(this.value)">
@@ -4618,14 +4778,103 @@ function showTtsSettings() {
       </div>
       <div class="form-hint">建议幼儿使用 0.7-0.9 倍语速</div>
     </div>
-    <div class="form-group">
+
+    <div class="tts-settings-section">
+      <div class="tts-section-title">
+        <span>🎵 音调</span>
+        <button class="btn btn-secondary tts-test-btn" onclick="testTtsPitch()">试听</button>
+      </div>
+      <input type="range" class="tts-slider" id="ttsPitchSlider" 
+        min="0.5" max="2.0" step="0.1" value="${settings.ttsPitch}"
+        oninput="updateTtsPitchDisplay(this.value)">
+      <div class="tts-slider-display">
+        <span>低沉</span>
+        <span id="ttsPitchValue">${settings.ttsPitch.toFixed(1)}</span>
+        <span>高亢</span>
+      </div>
+      <div class="form-hint">儿童模式建议稍高的音调，听起来更亲切</div>
+    </div>
+
+    <div class="tts-settings-section">
+      <div class="tts-section-title">
+        <span>🔊 音量</span>
+        <button class="btn btn-secondary tts-test-btn" onclick="testTtsVolume()">试听</button>
+      </div>
+      <input type="range" class="tts-slider" id="ttsVolumeSlider" 
+        min="0.1" max="1.0" step="0.1" value="${settings.ttsVolume}"
+        oninput="updateTtsVolumeDisplay(this.value)">
+      <div class="tts-slider-display">
+        <span>小</span>
+        <span id="ttsVolumeValue">${Math.round(settings.ttsVolume * 100)}%</span>
+        <span>大</span>
+      </div>
+    </div>
+
+    <div class="tts-settings-section">
+      <div class="tts-section-title">
+        <span>🤖 自动朗读</span>
+      </div>
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <label class="form-label" style="margin-bottom: 0;">AI回答自动朗读</label>
+        <div class="toggle-switch ${settings.ttsAutoRead ? 'active' : ''}" id="ttsAutoToggle" onclick="toggleTtsAuto()"></div>
+      </div>
+      <div class="form-hint">开启后，AI的回答会自动朗读出来</div>
+    </div>
+
+    <div class="form-group" style="margin-top: 8px;">
       <button class="btn btn-secondary" style="width: 100%; padding: 12px;" onclick="testTts()">
-        🔊 试听一下
+        🔊 完整试听
       </button>
     </div>
     <button class="btn btn-primary" style="width: 100%; padding: 14px;" onclick="saveTtsSettings()">保存</button>
   `;
   document.getElementById('settingsModal').classList.add('active');
+  
+  // 延迟填充语音列表（确保 DOM 已渲染）
+  setTimeout(() => {
+    populateVoiceSelect();
+  }, 50);
+}
+
+// 填充语音选择下拉框
+function populateVoiceSelect() {
+  const selectEl = document.getElementById('ttsVoiceSelect');
+  if (!selectEl) return;
+  
+  const settings = getSettings();
+  const voices = getChineseVoices();
+  
+  if (voices.length === 0) {
+    selectEl.innerHTML = '<option value="">暂无可用语音</option>';
+    return;
+  }
+  
+  let html = '';
+  for (const voice of voices) {
+    const displayName = voice.name + (voice.lang ? ` (${voice.lang})` : '');
+    const selected = settings.ttsVoice === voice.name ? 'selected' : '';
+    html += `<option value="${voice.name}" ${selected}>${displayName}</option>`;
+  }
+  
+  // 如果没有保存的语音，自动选择最佳语音
+  if (!settings.ttsVoice) {
+    const bestVoice = getBestChineseVoice();
+    if (bestVoice) {
+      html = html.replace(`value="${bestVoice.name}"`, `value="${bestVoice.name}" selected`);
+    }
+  }
+  
+  selectEl.innerHTML = html;
+}
+
+// 刷新语音列表
+function refreshVoiceList() {
+  if (!speechSynthesisSupported) return;
+  // 触发重新加载
+  window.speechSynthesis.getVoices();
+  setTimeout(() => {
+    populateVoiceSelect();
+  }, 200);
 }
 
 function toggleTtsAuto() {
@@ -4638,19 +4887,82 @@ function updateTtsRateDisplay(val) {
   if (el) el.textContent = val + 'x';
 }
 
+function updateTtsPitchDisplay(val) {
+  const el = document.getElementById('ttsPitchValue');
+  if (el) el.textContent = parseFloat(val).toFixed(1);
+}
+
+function updateTtsVolumeDisplay(val) {
+  const el = document.getElementById('ttsVolumeValue');
+  if (el) el.textContent = Math.round(parseFloat(val) * 100) + '%';
+}
+
+// 构建测试用 utterance（应用当前设置）
+function buildTestUtterance(text) {
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'zh-CN';
+  
+  const voiceSelect = document.getElementById('ttsVoiceSelect');
+  const rateSlider = document.getElementById('ttsRateSlider');
+  const pitchSlider = document.getElementById('ttsPitchSlider');
+  const volumeSlider = document.getElementById('ttsVolumeSlider');
+  
+  const settings = getSettings();
+  
+  // 语音
+  if (voiceSelect && voiceSelect.value) {
+    const voices = getChineseVoices();
+    const voice = voices.find(v => v.name === voiceSelect.value);
+    if (voice) {
+      utterance.voice = voice;
+      utterance.lang = voice.lang || 'zh-CN';
+    }
+  } else {
+    const bestVoice = getBestChineseVoice();
+    if (bestVoice) {
+      utterance.voice = bestVoice;
+      utterance.lang = bestVoice.lang || 'zh-CN';
+    }
+  }
+  
+  // 语速
+  utterance.rate = rateSlider ? parseFloat(rateSlider.value) : (settings.ttsRate || 0.9);
+  // 音调
+  utterance.pitch = pitchSlider ? parseFloat(pitchSlider.value) : (settings.ttsPitch || 1.0);
+  // 音量
+  utterance.volume = volumeSlider ? parseFloat(volumeSlider.value) : (settings.ttsVolume !== undefined ? settings.ttsVolume : 1.0);
+  
+  return utterance;
+}
+
 function testTts() {
   if (!speechSynthesisSupported) {
     alert('您的浏览器不支持语音朗读功能');
     return;
   }
-  const rate = parseFloat(document.getElementById('ttsRateSlider').value);
-  const utterance = new SpeechSynthesisUtterance('小朋友你好呀！我是小豆老师，我们一起来学习吧！🌟');
-  utterance.lang = 'zh-CN';
-  utterance.rate = rate;
-  const voices = window.speechSynthesis.getVoices();
-  const zhVoice = voices.find(v => v.lang.startsWith('zh') || v.lang.includes('CN'));
-  if (zhVoice) utterance.voice = zhVoice;
   window.speechSynthesis.cancel();
+  const utterance = buildTestUtterance('小朋友你好呀！我是小豆老师，我们一起来学习吧！🌟');
+  window.speechSynthesis.speak(utterance);
+}
+
+function testTtsRate() {
+  if (!speechSynthesisSupported) return;
+  window.speechSynthesis.cancel();
+  const utterance = buildTestUtterance('这是当前语速的效果，小乌龟慢慢走，小兔子快快跑。');
+  window.speechSynthesis.speak(utterance);
+}
+
+function testTtsPitch() {
+  if (!speechSynthesisSupported) return;
+  window.speechSynthesis.cancel();
+  const utterance = buildTestUtterance('这是当前音调的效果，听听我的声音有什么不一样。');
+  window.speechSynthesis.speak(utterance);
+}
+
+function testTtsVolume() {
+  if (!speechSynthesisSupported) return;
+  window.speechSynthesis.cancel();
+  const utterance = buildTestUtterance('这是当前音量的效果，一二三，三二一。');
   window.speechSynthesis.speak(utterance);
 }
 
@@ -4658,6 +4970,12 @@ function saveTtsSettings() {
   const settings = getSettings();
   settings.ttsAutoRead = document.getElementById('ttsAutoToggle').classList.contains('active');
   settings.ttsRate = parseFloat(document.getElementById('ttsRateSlider').value);
+  settings.ttsPitch = parseFloat(document.getElementById('ttsPitchSlider').value);
+  settings.ttsVolume = parseFloat(document.getElementById('ttsVolumeSlider').value);
+  
+  const voiceSelect = document.getElementById('ttsVoiceSelect');
+  settings.ttsVoice = voiceSelect ? voiceSelect.value : '';
+  
   saveSettings(settings);
   closeSettingsModal();
   updateSettingsDisplay();
@@ -4808,11 +5126,25 @@ setTimeout(() => {
   applyKidMode();
 }, 100);
 
-// 预加载语音合成声音
+// 预加载语音合成声音，首次加载时自动选择最佳中文语音
 if (speechSynthesisSupported) {
   window.speechSynthesis.getVoices();
   window.speechSynthesis.onvoiceschanged = () => {
     window.speechSynthesis.getVoices();
+    // 如果设置中没有保存语音，自动选择最佳语音
+    const settings = getSettings();
+    if (!settings.ttsVoice) {
+      const bestVoice = getBestChineseVoice();
+      if (bestVoice) {
+        settings.ttsVoice = bestVoice.name;
+        saveSettings(settings);
+      }
+    }
+    // 如果设置页面已打开，刷新语音下拉框
+    const voiceSelect = document.getElementById('ttsVoiceSelect');
+    if (voiceSelect) {
+      populateVoiceSelect();
+    }
   };
 }
 </script>
