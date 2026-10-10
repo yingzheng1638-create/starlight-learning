@@ -2551,7 +2551,7 @@ function refreshAllViews() {
 // ========== 存储相关 ==========
 function getSettings() {
   const data = localStorage.getItem('starlight_settings');
-  const settings = data ? JSON.parse(data) : { 
+  const defaults = {
     aiProvider: 'doubao',
     apiKey: '', 
     model: 'doubao-seed-1-6-flash-250828',
@@ -2559,6 +2559,16 @@ function getSettings() {
     deepseekModel: 'deepseek-flash',
     password: '123456'
   };
+  const settings = data ? { ...defaults, ...JSON.parse(data) } : defaults;
+  // 迁移旧的 DeepSeek 模型名
+  const oldModelMap = {
+    'deepseek-chat': 'deepseek-flash',
+    'deepseek-reasoner': 'deepseek-v4-pro'
+  };
+  if (oldModelMap[settings.deepseekModel]) {
+    settings.deepseekModel = oldModelMap[settings.deepseekModel];
+    saveSettings(settings);
+  }
   // 兼容独立的 ai_provider 键（优先级高于 settings 内的值）
   const aiProviderKey = localStorage.getItem('ai_provider');
   if (aiProviderKey) {
