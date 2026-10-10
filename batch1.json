@@ -1,0 +1,477 @@
+﻿[
+  {
+    "id": "mt_kVzAFMuFc4",
+    "type": "PROCEDURAL",
+    "subject": "English",
+    "domain": "Phonics & Word Reading",
+    "name": "Syllables (age 6+)",
+    "description": "Decode words of two or more syllables by breaking them into syllable chunks, applying knowledge that every syllable must contain a vowel sound, and blending the parts together",
+    "ageRangeStart": 6,
+    "ageRangeEnd": 9,
+    "centrality": 0.01367989056087551,
+    "evidence": [
+      "Read 'rabbit', 'thunder', 'fantastic' by breaking into syllable chunks and blending",
+      "Clap or tap syllables in a multi-syllable word, then read each chunk before blending",
+      "Identify that every syllable must contain a vowel sound"
+    ],
+    "assessmentPrompt": "When {{name}} encounters a long word like 'fantastic' or 'umbrella', can they break it into syllables and blend the parts together to read the whole word?",
+    "standards": [
+      "ccss-ela:RF.1.3.d",
+      "ccss-ela:RF.1.3.e",
+      "ccss-ela:RF.2.3.c",
+      "ccss-ela:RF.3.3.c",
+      "uk-nc-2013:Eng/KS1/Y2/WR/3"
+    ]
+  },
+  {
+    "id": "mt_14OR-MhGJ9",
+    "type": "PROCEDURAL",
+    "subject": "English",
+    "domain": "Phonics & Word Reading",
+    "name": "Decoding unfamiliar words",
+    "description": "Read Y3-4 exception words with unusual spelling-sound correspondences, applying growing knowledge of morphology and etymology to decode unfamiliar exception words",
+    "ageRangeStart": 7,
+    "ageRangeEnd": 9,
+    "centrality": 0.01094391244870041,
+    "evidence": [
+      "Read exception words from the Y3-4 statutory word list accurately (e.g. 'business', 'caught', 'knowledge', 'different')",
+      "Identify unusual letter-sound correspondences in exception words and explain why the word does not follow common GPC rules",
+      "Use growing knowledge of morphology and etymology to attempt unfamiliar exception words (e.g. recognise the root 'know' in 'knowledge')"
+    ],
+    "assessmentPrompt": "Can {{name}} read trickier exception words — like 'ordinary', 'promise', 'recent', or 'island' — without being thrown off by the parts that don't follow the usual spelling rules?",
+    "standards": [
+      "ccss-ela:RF.2.3.f",
+      "ccss-ela:RF.3.3.d"
+    ]
+  },
+  {
+    "id": "mt_HrgDjxcWvf",
+    "type": "PROCEDURAL",
+    "subject": "English",
+    "domain": "Phonics & Word Reading",
+    "name": "Prefixes and suffixes",
+    "description": "Read words containing common prefixes and suffixes from the Y3-4 programme, applying knowledge of root words, prefixes and suffixes (morphology and etymology) to read aloud and understand new words",
+    "ageRangeStart": 7,
+    "ageRangeEnd": 9,
+    "centrality": 0.01094391244870041,
+    "evidence": [
+      "Read words with common prefixes (dis-, mis-, re-, pre-) and suffixes (-ation, -ous, -ly) by identifying the root word first",
+      "Apply morphological knowledge to attempt unfamiliar words (e.g. recognise 'happy' inside 'unhappiness')",
+      "Explain how a prefix or suffix changes the meaning or word class of a root word (e.g. 'care' → 'careless' → 'carelessly')"
+    ],
+    "assessmentPrompt": "When {{name}} sees a word like 'disappear' or 'comfortable', can they spot the root word and figure out what the prefix or suffix is adding to its meaning?",
+    "standards": [
+      "ccss-ela:RF.2.3.d",
+      "ccss-ela:RF.3.3.a",
+      "ccss-ela:RF.3.3.b"
+    ]
+  },
+  {
+    "id": "mt_8-POYyg7GJ",
+    "type": "META",
+    "subject": "English",
+    "domain": "Reading Comprehension",
+    "name": "Predicting what happens next",
+    "description": "Predict what might happen next in a story based on what has been read so far; discuss the significance of titles and events",
+    "ageRangeStart": 4,
+    "ageRangeEnd": 10,
+    "centrality": 0.0533515731874145,
+    "evidence": [
+      "Make a prediction before turning the page and explain reasoning",
+      "Discuss why a title fits or hints at the story content",
+      "Revise predictions as new information is encountered in the text"
+    ],
+    "assessmentPrompt": "When you stop midway through a story, can {{name}} make a reasonable guess about what might happen next — and explain why they think so based on what's happened so far?",
+    "standards": [
+      "uk-nc-2013:Eng_Y1_RC_09",
+      "uk-nc-2013:Eng_Y1_RC_11"
+    ]
+  },
+  {
+    "id": "mt_XeMZdf2Y9W",
+    "type": "CONCEPTUAL",
+    "subject": "English",
+    "domain": "Reading Comprehension",
+    "name": "Book Features and Author's Reasons",
+    "description": "Identify front cover, back cover, and title page of a book; identify the reasons an author gives to support points in informational text",
+    "ageRangeStart": 5,
+    "ageRangeEnd": 8,
+    "centrality": 0.07934336525307797,
+    "evidence": [
+      "Point to and name parts of a book (front cover, back cover, title page)",
+      "Use the title page to find the title, author, and illustrator",
+      "Identify a reason the author gives for a claim in a simple non-fiction text"
+    ],
+    "assessmentPrompt": "Can {{name}} find the contents page or index in a non-fiction book and use it to locate specific information — and do they understand why the author included those features?",
+    "standards": [
+      "ccss-ela:RI.1.5",
+      "ccss-ela:RI.1.8",
+      "ccss-ela:RI.2.4",
+      "ccss-ela:RI.K.5",
+      "ccss-ela:RI.K.8"
+    ]
+  },
+  {
+    "id": "mt_sSQlLOnAow",
+    "type": "CONCEPTUAL",
+    "subject": "English",
+    "domain": "Reading Comprehension",
+    "name": "Characters, settings, and events",
+    "description": "Identify characters, settings, and major events in stories; become familiar with key stories, fairy tales, and traditional tales and retell them with key details in sequence",
+    "ageRangeStart": 5,
+    "ageRangeEnd": 8,
+    "centrality": 0.1532147742818057,
+    "evidence": [
+      "Name the main characters in a story",
+      "Describe where and when a story takes place",
+      "Retell a familiar story including beginning, middle, and end events"
+    ],
+    "assessmentPrompt": "After reading a fairy tale or story together, can {{name}} retell it to you in order — saying who was in it, where it happened, and what the main events were?",
+    "standards": [
+      "ccss-ela:RL.1.3",
+      "ccss-ela:RL.K.2",
+      "ccss-ela:RL.K.3",
+      "uk-nc-2013:Eng/KS1/Y2/C/1c",
+      "uk-nc-2013:Eng_LKS2_Read_Comp_4",
+      "uk-nc-2013:Eng_Y1_RC_03"
+    ]
+  },
+  {
+    "id": "mt_GLY3R3YSlf",
+    "type": "META",
+    "subject": "English",
+    "domain": "Reading Comprehension",
+    "name": "Comparing Characters Across Stories",
+    "description": "Compare and contrast the adventures and experiences of characters in familiar stories; identify similarities and differences between two texts on the same topic",
+    "ageRangeStart": 5,
+    "ageRangeEnd": 9,
+    "centrality": 0.03693570451436388,
+    "evidence": [
+      "Identify what two stories have in common (e.g. 'Both have a bear character')",
+      "Compare information from two books about the same topic",
+      "Discuss how characters' experiences are similar or different across stories"
+    ],
+    "assessmentPrompt": "If {{name}} has read two stories with similar themes — like two tales about a brave hero — can they tell you what was the same and what was different between them?",
+    "standards": [
+      "ccss-ela:RI.1.9",
+      "ccss-ela:RI.2.9",
+      "ccss-ela:RI.3.9",
+      "ccss-ela:RI.K.9",
+      "ccss-ela:RL.1.9",
+      "ccss-ela:RL.3.9",
+      "ccss-ela:RL.K.9"
+    ]
+  },
+  {
+    "id": "mt_5n-O41lUgn",
+    "type": "META",
+    "subject": "English",
+    "domain": "Reading Comprehension",
+    "name": "Connecting reading to experience",
+    "description": "Link what is read or heard to own experiences; draw on background knowledge and vocabulary to support understanding of texts",
+    "ageRangeStart": 5,
+    "ageRangeEnd": 7,
+    "centrality": 0.01641586867305062,
+    "evidence": [
+      "Make text-to-self connections (e.g. 'This reminds me of when I...')",
+      "Use personal experience to understand a character's feelings",
+      "Relate events in a story to own life to deepen comprehension"
+    ],
+    "assessmentPrompt": "When {{name}} hears or reads a story about something familiar — like going to school or visiting a grandparent — do they connect it to their own life and use that to help understand what's happening?",
+    "standards": [
+      "uk-nc-2013:Eng/KS1/Y2/C/2a",
+      "uk-nc-2013:Eng_Y1_RC_02",
+      "uk-nc-2013:Eng_Y1_RC_07"
+    ]
+  },
+  {
+    "id": "mt_gZIo5oiBMt",
+    "type": "CONCEPTUAL",
+    "subject": "English",
+    "domain": "Reading Comprehension",
+    "name": "Different Types of Texts",
+    "description": "Recognise common types of texts (storybooks, poems, non-fiction); name the author and illustrator and define the role of each in telling or presenting a text",
+    "ageRangeStart": 5,
+    "ageRangeEnd": 7,
+    "centrality": 0.008207934336525308,
+    "evidence": [
+      "Distinguish between a story, a poem, and a non-fiction book",
+      "Point to and name the author and illustrator on the cover",
+      "Explain that the author writes the words and the illustrator makes the pictures"
+    ],
+    "assessmentPrompt": "When you hand {{name}} a book, can they tell you whether it's a story or a fact book — and point out the author's name on the cover?",
+    "standards": [
+      "ccss-ela:RI.K.6",
+      "ccss-ela:RL.1.5",
+      "ccss-ela:RL.K.5",
+      "ccss-ela:RL.K.6"
+    ]
+  },
+  {
+    "id": "mt_thsY1ZesaU",
+    "type": "META",
+    "subject": "English",
+    "domain": "Reading Comprehension",
+    "name": "Discussing Texts as a Group",
+    "description": "Participate in discussions about what is read, taking turns and listening to others; explain understanding clearly; actively engage in group reading activities",
+    "ageRangeStart": 5,
+    "ageRangeEnd": 10,
+    "centrality": 0.01641586867305062,
+    "evidence": [
+      "Share ideas about a book in a group discussion",
+      "Listen to and respond to others' opinions about a text",
+      "Take turns speaking and build on what classmates have said about a book"
+    ],
+    "assessmentPrompt": "When {{name}}'s class discusses a book they've all read, does {{name}} join in — sharing their own ideas and listening to what others think, even if their view is different?",
+    "standards": [
+      "ccss-ela:RI.K.10",
+      "ccss-ela:RL.K.10",
+      "uk-nc-2013:Eng.UKS2.Read.Comp.6",
+      "uk-nc-2013:Eng/KS1/Y2/C/2d",
+      "uk-nc-2013:Eng/KS1/Y2/C/3",
+      "uk-nc-2013:Eng/KS1/Y2/C/4",
+      "uk-nc-2013:Eng_LKS2_Read_Comp_16",
+      "uk-nc-2013:Eng_Y1_RC_12",
+      "uk-nc-2013:Eng_Y1_RC_13"
+    ]
+  },
+  {
+    "id": "mt_mLPEMpYb_R",
+    "type": "PROCEDURAL",
+    "subject": "English",
+    "domain": "Reading Comprehension",
+    "name": "Listening to Texts Read Aloud",
+    "description": "Listen to and discuss poems, stories, and non-fiction at a level beyond independent reading; confirm understanding of texts read aloud by asking and answering questions about key details",
+    "ageRangeStart": 5,
+    "ageRangeEnd": 10,
+    "centrality": 0.2503419972640219,
+    "evidence": [
+      "Answer questions about a story or non-fiction text read aloud by the teacher",
+      "Discuss events, characters, or ideas from chapter books read to the class",
+      "Ask for clarification when something in a read-aloud is not understood"
+    ],
+    "assessmentPrompt": "After you read a story aloud to {{name}}, can they answer questions about what happened — like who the main character was, where the story took place, and what the problem was?",
+    "standards": [
+      "ccss-ela:RI.3.10",
+      "ccss-ela:RL.3.10",
+      "ccss-ela:SL.1.2",
+      "ccss-ela:SL.K.2",
+      "uk-nc-2013:Eng.UKS2.Read.Comp.1a",
+      "uk-nc-2013:Eng.UKS2.Read.Comp.1b",
+      "uk-nc-2013:Eng.UKS2.Read.Comp.1c",
+      "uk-nc-2013:Eng.UKS2.Read.Comp.7",
+      "uk-nc-2013:Eng/KS1/Y2/C/1a",
+      "uk-nc-2013:Eng_LKS2_Read_Comp_1",
+      "uk-nc-2013:Eng_Y1_RC_01"
+    ]
+  },
+  {
+    "id": "mt_aFvsj35QzC",
+    "type": "PROCEDURAL",
+    "subject": "English",
+    "domain": "Reading Comprehension",
+    "name": "Main Topic of Informational Texts",
+    "description": "Identify the main topic and retell key details of informational texts; describe connections between individuals, events, ideas, or pieces of information",
+    "ageRangeStart": 5,
+    "ageRangeEnd": 7,
+    "centrality": 0.1108071135430917,
+    "evidence": [
+      "State what a non-fiction text is mostly about in one sentence",
+      "List two or three important facts learned from an informational text",
+      "Explain how two events or ideas in a text are connected"
+    ],
+    "assessmentPrompt": "After {{name}} reads a short fact book — like one about animals or space — can they tell you what the main topic was and give you a few key facts they learned from it?",
+    "standards": []
+  },
+  {
+    "id": "mt_OlhMP7ShFT",
+    "type": "REPRESENTATIONAL",
+    "subject": "English",
+    "domain": "Reading Comprehension",
+    "name": "Pictures and Text Working Together",
+    "description": "Describe the relationship between illustrations and the text in which they appear; use pictures to support and extend comprehension",
+    "ageRangeStart": 5,
+    "ageRangeEnd": 9,
+    "centrality": 0.005471956224350205,
+    "evidence": [
+      "Use pictures to predict or confirm story events",
+      "Describe what is happening in an illustration and how it relates to the text",
+      "Explain how an illustration adds information not stated in words"
+    ],
+    "assessmentPrompt": "When {{name}} is reading a picture book, do they look at the illustrations to help them understand what's happening in the story — and can they explain how a picture connects to the words on the page?",
+    "standards": [
+      "ccss-ela:RI.1.6",
+      "ccss-ela:RI.1.7",
+      "ccss-ela:RI.2.7",
+      "ccss-ela:RI.3.7",
+      "ccss-ela:RI.K.7",
+      "ccss-ela:RL.1.7",
+      "ccss-ela:RL.2.7",
+      "ccss-ela:RL.3.7",
+      "ccss-ela:RL.K.7"
+    ]
+  },
+  {
+    "id": "mt_E5KC4AnRLW",
+    "type": "PROCEDURAL",
+    "subject": "English",
+    "domain": "Reading Comprehension",
+    "name": "Reading between the lines",
+    "description": "Ask and answer questions about key details in literary and informational texts; make simple inferences based on what characters say and do",
+    "ageRangeStart": 5,
+    "ageRangeEnd": 10,
+    "centrality": 0.09575923392612859,
+    "evidence": [
+      "Answer 'who', 'what', 'where' questions about a text using evidence",
+      "Infer a character's feelings from their actions (e.g. 'She's sad because she's crying')",
+      "Make logical guesses about unstated information using text clues"
+    ],
+    "assessmentPrompt": "While reading a story, can {{name}} answer questions like \"Why did the character do that?\" or \"How do you think they felt?\" — using clues from the text rather than just guessing?",
+    "standards": [
+      "ccss-ela:RI.3.1",
+      "ccss-ela:RL.3.1",
+      "uk-nc-2013:Eng.UKS2.Read.Comp.2b"
+    ]
+  },
+  {
+    "id": "mt_rQ2YJJi4uh",
+    "type": "META",
+    "subject": "English",
+    "domain": "Reading Comprehension",
+    "name": "Self-Correcting While Reading",
+    "description": "Check that text makes sense while reading and self-correct inaccurate reading by re-reading or using context",
+    "ageRangeStart": 5,
+    "ageRangeEnd": 11,
+    "centrality": 0.09028727770177838,
+    "evidence": [
+      "Notice when reading does not make sense and stop to re-read",
+      "Self-correct errors mid-sentence (e.g. 'Wait, that doesn't sound right')",
+      "Use meaning, sentence structure, and visual cues together to monitor reading"
+    ],
+    "assessmentPrompt": "When {{name}} is reading and something doesn't quite make sense, do they go back and re-read that part — or use the surrounding words to work out what a tricky word or sentence means?",
+    "standards": [
+      "ccss-ela:RF.5.4.c",
+      "uk-nc-2013:Eng.UKS2.Read.Comp.2a",
+      "uk-nc-2013:Eng/KS1/Y2/C/2b",
+      "uk-nc-2013:Eng_LKS2_Read_Comp_10",
+      "uk-nc-2013:Eng_LKS2_Read_Comp_9",
+      "uk-nc-2013:Eng_Y1_RC_08"
+    ]
+  },
+  {
+    "id": "mt_xjl6AEhnjk",
+    "type": "CONCEPTUAL",
+    "subject": "English",
+    "domain": "Reading Comprehension",
+    "name": "Characters' Viewpoints and Responses",
+    "description": "Identify and compare characters' points of view, recognise who is narrating a story, describe how characters respond to events and challenges, and compare characters' experiences across different stories or versions of the same story",
+    "ageRangeStart": 6,
+    "ageRangeEnd": 8,
+    "centrality": 0.0533515731874145,
+    "evidence": [
+      "Identify who is telling a story and explain how you know (e.g. 'The wolf is telling the story because he says I')",
+      "Describe how a character responds to a problem or challenge using evidence from the text (e.g. 'When the bridge broke, she decided to swim across')",
+      "Compare how two characters from different stories react to a similar situation (e.g. how two heroes show bravery in different ways)"
+    ],
+    "assessmentPrompt": "When {{name}} reads a story told from one character's point of view, can they think about how a different character in the same story might have seen events differently?",
+    "standards": []
+  },
+  {
+    "id": "mt_fL1Xz8ostr",
+    "type": "CONCEPTUAL",
+    "subject": "English",
+    "domain": "Reading Comprehension",
+    "name": "Expressive and Sensory Language",
+    "description": "Recognise recurring literary language in stories and poetry, identify words and phrases that suggest feelings or appeal to the senses, and discuss favourite words and phrases",
+    "ageRangeStart": 6,
+    "ageRangeEnd": 9,
+    "centrality": 0.04240766073871409,
+    "evidence": [
+      "Spot recurring story language such as 'Once upon a time' and 'happily ever after'",
+      "Identify sensory words and phrases in a poem: 'the icy wind howled'",
+      "Share a favourite word or phrase from a story and explain why it appeals"
+    ],
+    "assessmentPrompt": "When {{name}} reads a poem or a story with vivid language, can they pick out a phrase they really liked — and tell you why it works well or how it made them feel?",
+    "standards": [
+      "ccss-ela:RI.3.4",
+      "ccss-ela:RL.1.4",
+      "ccss-ela:RL.2.4",
+      "ccss-ela:RL.3.4",
+      "uk-nc-2013:Eng/KS1/Y2/C/1e",
+      "uk-nc-2013:Eng/KS1/Y2/C/1g",
+      "uk-nc-2013:Eng_LKS2_Read_Comp_7"
+    ]
+  },
+  {
+    "id": "mt_QCWWmDMYZR",
+    "type": "PROCEDURAL",
+    "subject": "English",
+    "domain": "Reading Comprehension",
+    "name": "Main Topic & Key Details",
+    "description": "Identify the main topic of a multi-paragraph informational text, determine the focus of specific paragraphs, and explain how key details support the main idea",
+    "ageRangeStart": 6,
+    "ageRangeEnd": 10,
+    "centrality": 0.02462380300957592,
+    "evidence": [
+      "Identify the main topic of a multi-paragraph informational text and state the focus of individual paragraphs",
+      "Describe how specific details and facts in the text support the main idea",
+      "Explain how events, ideas, or steps in a text are connected (e.g. cause-effect, sequence, comparison)"
+    ],
+    "assessmentPrompt": "When {{name}} reads a multi-page article — like a school text about a historical event — can they tell you the main idea and then explain what each section was specifically about?",
+    "standards": [
+      "ccss-ela:RI.2.8",
+      "ccss-ela:RI.3.2",
+      "ccss-ela:RI.4.2"
+    ]
+  },
+  {
+    "id": "mt_ZhUuT__i2H",
+    "type": "CONCEPTUAL",
+    "subject": "English",
+    "domain": "Reading Comprehension",
+    "name": "Non-Fiction Text Features",
+    "description": "Recognise different non-fiction text structures and features (headings, contents, glossary, index), understanding how texts are organised to present information",
+    "ageRangeStart": 6,
+    "ageRangeEnd": 9,
+    "centrality": 0.06566347469220246,
+    "evidence": [
+      "Use a contents page to find information on a specific topic in a non-fiction book",
+      "Identify the purpose of headings, glossary, and index in an information text",
+      "Recognise that non-fiction books can be structured as lists, time order, or question-and-answer"
+    ],
+    "assessmentPrompt": "When {{name}} is using a non-fiction book for a school project, do they know how to use the headings, contents page, and index to find what they need quickly?",
+    "standards": [
+      "ccss-ela:RI.1.2",
+      "ccss-ela:RI.1.5",
+      "ccss-ela:RI.2.5",
+      "ccss-ela:RI.2.6",
+      "ccss-ela:RI.3.5",
+      "uk-nc-2013:Eng/KS1/Y2/C/1d",
+      "uk-nc-2013:Eng_LKS2_Read_Comp_2"
+    ]
+  },
+  {
+    "id": "mt_zlSoIKPyId",
+    "type": "CONCEPTUAL",
+    "subject": "English",
+    "domain": "Reading Comprehension",
+    "name": "Retelling Stories with Structure",
+    "description": "Retell stories including key details in sequence, describe characters, settings, and major events using evidence from the text, and describe the overall structure of a story (beginning, middle, ending)",
+    "ageRangeStart": 6,
+    "ageRangeEnd": 8,
+    "centrality": 0.04514363885088919,
+    "evidence": [
+      "Retell a familiar story in order, including at least three key details from beginning, middle, and end",
+      "Describe a character's appearance, actions, or personality using details from the text",
+      "Explain how the beginning of a story introduces the characters and setting, and how the ending concludes the action"
+    ],
+    "assessmentPrompt": "After reading a story, can {{name}} describe the main character — including what kind of person they are, what they wanted, and how they felt at the end — using details from the book?",
+    "standards": [
+      "ccss-ela:RL.1.2",
+      "ccss-ela:RL.1.3",
+      "ccss-ela:RL.2.5",
+      "uk-nc-2013:Eng/KS1/Y2/C/1c",
+      "uk-nc-2013:Eng/KS1/Y2/C/2c"
+    ]
+  }
+]
