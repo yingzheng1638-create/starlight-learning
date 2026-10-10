@@ -1748,6 +1748,50 @@ body {
   -webkit-appearance: none;
 }
 
+/* 分段选择器 */
+.segmented-control {
+  display: flex;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  padding: 4px;
+  gap: 4px;
+}
+
+.segmented-control-item {
+  flex: 1;
+  padding: 10px 12px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  border-radius: calc(var(--radius-md) - 4px);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+  border: none;
+  background: transparent;
+  font-family: inherit;
+}
+
+.segmented-control-item:hover {
+  color: var(--text-primary);
+}
+
+.segmented-control-item.active {
+  background: var(--bg-card);
+  color: var(--primary);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  font-weight: 600;
+}
+
+.provider-fields {
+  margin-top: 16px;
+}
+
+.provider-fields.hidden {
+  display: none;
+}
+
 /* 空状态 */
 .empty-state {
   text-align: center;
@@ -2178,7 +2222,15 @@ body {
       </div>
 
       <div class="settings-group">
-        <div class="settings-group-title">豆包 AI 设置</div>
+        <div class="settings-group-title">AI 设置</div>
+        <div class="settings-item" onclick="showAISettings()">
+          <div class="settings-item-icon">🏢</div>
+          <div class="settings-item-content">
+            <div class="settings-item-label">AI 服务商</div>
+            <div class="settings-item-value" id="providerName">豆包</div>
+          </div>
+          <div class="settings-item-arrow">›</div>
+        </div>
         <div class="settings-item" onclick="showApiSettings()">
           <div class="settings-item-icon">🔑</div>
           <div class="settings-item-content">
@@ -2499,15 +2551,28 @@ function refreshAllViews() {
 // ========== 存储相关 ==========
 function getSettings() {
   const data = localStorage.getItem('starlight_settings');
-  return data ? JSON.parse(data) : { 
+  const settings = data ? JSON.parse(data) : { 
+    aiProvider: 'doubao',
     apiKey: '', 
     model: 'doubao-seed-1-6-flash-250828',
+    deepseekApiKey: '',
+    deepseekModel: 'deepseek-chat',
     password: '123456'
   };
+  // 兼容独立的 ai_provider 键（优先级高于 settings 内的值）
+  const aiProviderKey = localStorage.getItem('ai_provider');
+  if (aiProviderKey) {
+    settings.aiProvider = aiProviderKey;
+  }
+  return settings;
 }
 
 function saveSettings(settings) {
   localStorage.setItem('starlight_settings', JSON.stringify(settings));
+  // 同步保存 ai_provider 独立键
+  if (settings.aiProvider) {
+    localStorage.setItem('ai_provider', settings.aiProvider);
+  }
 }
 
 function getChildData(childId) {
@@ -3301,8 +3366,12 @@ async function sendMessage() {
   if (!message) return;
 
   const settings = getSettings();
-  if (!settings.apiKey) {
-    addChatMessage('请先在「设置」中配置豆包 API Key 才能使用 AI 问答功能哦！', false);
+  const isDeepSeek = settings.aiProvider === 'deepseek';
+  const apiKey = isDeepSeek ? settings.deepseekApiKey : settings.apiKey;
+  const providerName = isDeepSeek ? 'DeepSeek' : '豆包';
+  
+  if (!apiKey) {
+    addChatMessage(`请先在「设置」中配置${providerName} API Key 才能使用 AI 问答功能哦！`, false);
     return;
   }
 
@@ -3329,7 +3398,10 @@ async function sendMessage() {
 相关知识点参考：
 ${context}`;
 
-    const response = await callDoubaoAPI(settings.apiKey, settings.model, systemPrompt, message);
+    const model = isDeepSeek ? settings.deepseekModel : settings.model;
+    const response = isDeepSeek
+      ? await callDeepSeekAPI(apiKey, model, systemPrompt, message)
+      : await callDoubaoAPI(apiKey, model, systemPrompt, message);
     removeTypingIndicator();
     addChatMessage(response, false);
   } catch (error) {
@@ -3367,6 +3439,35 @@ ${prereqs}`;
 
 async function callDoubaoAPI(apiKey, model, systemPrompt, userMessage) {
   const endpoint = 'https://ark.cn-beijing.volces.com/api/v3/chat/completions';
+  
+  const response = await fetch(endpoint, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${apiKey}`
+    },
+    body: JSON.stringify({
+      model: model,
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: userMessage }
+      ],
+      temperature: 0.7,
+      max_tokens: 800
+    })
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({}));
+    throw new Error(error.error?.message || `API 请求失败 (${response.status})`);
+  }
+
+  const data = await response.json();
+  return data.choices?.[0]?.message?.content || '抱歉，我没有理解你的问题。';
+}
+
+async function callDeepSeekAPI(apiKey, model, systemPrompt, userMessage) {
+  const endpoint = 'https://api.deepseek.com/v1/chat/completions';
   
   const response = await fetch(endpoint, {
     method: 'POST',
@@ -3479,14 +3580,35 @@ function renderProgressPage() {
 // ========== 设置页 ==========
 function updateSettingsDisplay() {
   const settings = getSettings();
-  document.getElementById('apiKeyStatus').textContent = settings.apiKey ? '已配置 ✓' : '未配置';
-  const modelNames = {
+  
+  // 服务商名称
+  const providerNames = {
+    'doubao': '豆包（火山引擎）',
+    'deepseek': 'DeepSeek'
+  };
+  document.getElementById('providerName').textContent = providerNames[settings.aiProvider] || '豆包';
+  
+  // API Key 状态
+  const hasKey = settings.aiProvider === 'deepseek' 
+    ? settings.deepseekApiKey 
+    : settings.apiKey;
+  document.getElementById('apiKeyStatus').textContent = hasKey ? '已配置 ✓' : '未配置';
+  
+  // 模型名称
+  const doubaoModelNames = {
     'doubao-seed-1-6-flash-250828': '豆包 Seed 1.6 Flash',
     'doubao-pro-4k': '豆包 Pro 4K',
     'doubao-pro-32k': '豆包 Pro 32K',
     'doubao-lite-4k': '豆包 Lite 4K'
   };
-  document.getElementById('modelName').textContent = modelNames[settings.model] || settings.model;
+  const deepseekModelNames = {
+    'deepseek-chat': 'DeepSeek Chat',
+    'deepseek-reasoner': 'DeepSeek Reasoner'
+  };
+  const modelNames = settings.aiProvider === 'deepseek' ? deepseekModelNames : doubaoModelNames;
+  const currentModel = settings.aiProvider === 'deepseek' ? settings.deepseekModel : settings.model;
+  document.getElementById('modelName').textContent = modelNames[currentModel] || currentModel;
+  
   const lang = getLanguage();
   const langNames = { zh: '中文', en: 'English', bilingual: '中英对照' };
   document.getElementById('languageName').textContent = langNames[lang] || '中文';
@@ -3522,23 +3644,107 @@ function showSettings() {
   navigateTo('settings');
 }
 
+function showAISettings() {
+  const settings = getSettings();
+  document.getElementById('settingsModalTitle').textContent = 'AI 服务商';
+  document.getElementById('settingsModalBody').innerHTML = `
+    <div class="form-group">
+      <label class="form-label">选择 AI 服务商</label>
+      <div class="segmented-control">
+        <button class="segmented-control-item ${settings.aiProvider === 'doubao' ? 'active' : ''}" onclick="selectProvider('doubao')" id="providerDoubaoBtn">
+          🫘 豆包
+        </button>
+        <button class="segmented-control-item ${settings.aiProvider === 'deepseek' ? 'active' : ''}" onclick="selectProvider('deepseek')" id="providerDeepseekBtn">
+          🌊 DeepSeek
+        </button>
+      </div>
+      <div class="form-hint">选择不同的 AI 服务商，需要配置对应的 API Key</div>
+    </div>
+    <button class="btn btn-primary" style="width: 100%; padding: 14px;" onclick="saveProviderSetting()">保存</button>
+  `;
+  document.getElementById('settingsModal').classList.add('active');
+}
+
+function selectProvider(provider) {
+  const settings = getSettings();
+  settings.aiProvider = provider;
+  // 更新按钮状态
+  document.getElementById('providerDoubaoBtn').classList.toggle('active', provider === 'doubao');
+  document.getElementById('providerDeepseekBtn').classList.toggle('active', provider === 'deepseek');
+}
+
+function saveProviderSetting() {
+  // 临时保存的提供商已经在 selectProvider 中更新了 settings 对象吗？不，我们需要从 UI 获取当前选择
+  // 实际上 selectProvider 只改了 UI，我们需要重新读取并保存
+  const isDoubao = document.getElementById('providerDoubaoBtn').classList.contains('active');
+  const provider = isDoubao ? 'doubao' : 'deepseek';
+  const settings = getSettings();
+  settings.aiProvider = provider;
+  saveSettings(settings);
+  closeSettingsModal();
+  updateSettingsDisplay();
+  alert('保存成功！');
+}
+
 function showApiSettings() {
   const settings = getSettings();
   document.getElementById('settingsModalTitle').textContent = 'API Key 设置';
   document.getElementById('settingsModalBody').innerHTML = `
     <div class="form-group">
-      <label class="form-label">豆包 API Key</label>
-      <input type="password" class="form-input" id="apiKeyInput" value="${settings.apiKey}" placeholder="请输入 API Key">
-      <div class="form-hint">在火山引擎控制台获取，用于 AI 问答功能</div>
+      <label class="form-label">AI 服务商</label>
+      <div class="segmented-control">
+        <button class="segmented-control-item ${settings.aiProvider === 'doubao' ? 'active' : ''}" onclick="switchApiProvider('doubao')" id="apiProviderDoubao">
+          🫘 豆包
+        </button>
+        <button class="segmented-control-item ${settings.aiProvider === 'deepseek' ? 'active' : ''}" onclick="switchApiProvider('deepseek')" id="apiProviderDeepseek">
+          🌊 DeepSeek
+        </button>
+      </div>
     </div>
-    <button class="btn btn-primary" style="width: 100%; padding: 14px;" onclick="saveApiKey()">保存</button>
+
+    <div id="doubaoFields" class="provider-fields ${settings.aiProvider === 'doubao' ? '' : 'hidden'}">
+      <div class="form-group">
+        <label class="form-label">豆包 API Key</label>
+        <input type="password" class="form-input" id="doubaoApiKeyInput" value="${settings.apiKey}" placeholder="请输入豆包 API Key">
+        <div class="form-hint">在火山引擎控制台获取，用于 AI 问答功能</div>
+      </div>
+    </div>
+
+    <div id="deepseekFields" class="provider-fields ${settings.aiProvider === 'deepseek' ? '' : 'hidden'}">
+      <div class="form-group">
+        <label class="form-label">DeepSeek API Key</label>
+        <input type="password" class="form-input" id="deepseekApiKeyInput" value="${settings.deepseekApiKey}" placeholder="请输入 DeepSeek API Key">
+        <div class="form-hint">在 platform.deepseek.com 获取，用于 AI 问答功能</div>
+      </div>
+    </div>
+
+    <button class="btn btn-primary" style="width: 100%; padding: 14px; margin-top: 8px;" onclick="saveApiKey()">保存</button>
   `;
   document.getElementById('settingsModal').classList.add('active');
 }
 
+function switchApiProvider(provider) {
+  // 更新按钮状态
+  document.getElementById('apiProviderDoubao').classList.toggle('active', provider === 'doubao');
+  document.getElementById('apiProviderDeepseek').classList.toggle('active', provider === 'deepseek');
+  // 显示/隐藏对应字段
+  document.getElementById('doubaoFields').classList.toggle('hidden', provider !== 'doubao');
+  document.getElementById('deepseekFields').classList.toggle('hidden', provider !== 'deepseek');
+}
+
 function saveApiKey() {
   const settings = getSettings();
-  settings.apiKey = document.getElementById('apiKeyInput').value.trim();
+  const isDoubao = document.getElementById('apiProviderDoubao').classList.contains('active');
+  
+  if (isDoubao) {
+    settings.apiKey = document.getElementById('doubaoApiKeyInput').value.trim();
+  } else {
+    settings.deepseekApiKey = document.getElementById('deepseekApiKeyInput').value.trim();
+  }
+  
+  // 同时保存当前选择的提供商
+  settings.aiProvider = isDoubao ? 'doubao' : 'deepseek';
+  
   saveSettings(settings);
   closeSettingsModal();
   updateSettingsDisplay();
@@ -3548,24 +3754,72 @@ function saveApiKey() {
 function showModelSettings() {
   const settings = getSettings();
   document.getElementById('settingsModalTitle').textContent = '选择模型';
+  
+  const isDoubao = settings.aiProvider !== 'deepseek';
+  const currentModel = isDoubao ? settings.model : settings.deepseekModel;
+  
   document.getElementById('settingsModalBody').innerHTML = `
     <div class="form-group">
-      <label class="form-label">AI 模型</label>
-      <select class="form-select" id="modelSelect">
-        <option value="doubao-seed-1-6-flash-250828" ${settings.model === 'doubao-seed-1-6-flash-250828' ? 'selected' : ''}>豆包 Seed 1.6 Flash（推荐，免费额度多）</option>
-        <option value="doubao-pro-4k" ${settings.model === 'doubao-pro-4k' ? 'selected' : ''}>豆包 Pro 4K（更聪明）</option>
-        <option value="doubao-pro-32k" ${settings.model === 'doubao-pro-32k' ? 'selected' : ''}>豆包 Pro 32K（长文本）</option>
-        <option value="doubao-lite-4k" ${settings.model === 'doubao-lite-4k' ? 'selected' : ''}>豆包 Lite 4K（轻量）</option>
-      </select>
+      <label class="form-label">AI 服务商</label>
+      <div class="segmented-control">
+        <button class="segmented-control-item ${isDoubao ? 'active' : ''}" onclick="switchModelProvider('doubao')" id="modelProviderDoubao">
+          🫘 豆包
+        </button>
+        <button class="segmented-control-item ${!isDoubao ? 'active' : ''}" onclick="switchModelProvider('deepseek')" id="modelProviderDeepseek">
+          🌊 DeepSeek
+        </button>
+      </div>
     </div>
-    <button class="btn btn-primary" style="width: 100%; padding: 14px;" onclick="saveModel()">保存</button>
+
+    <div id="doubaoModelFields" class="provider-fields ${isDoubao ? '' : 'hidden'}">
+      <div class="form-group">
+        <label class="form-label">豆包模型</label>
+        <select class="form-select" id="doubaoModelSelect">
+          <option value="doubao-seed-1-6-flash-250828" ${currentModel === 'doubao-seed-1-6-flash-250828' ? 'selected' : ''}>豆包 Seed 1.6 Flash（推荐，免费额度多）</option>
+          <option value="doubao-pro-4k" ${currentModel === 'doubao-pro-4k' ? 'selected' : ''}>豆包 Pro 4K（更聪明）</option>
+          <option value="doubao-pro-32k" ${currentModel === 'doubao-pro-32k' ? 'selected' : ''}>豆包 Pro 32K（长文本）</option>
+          <option value="doubao-lite-4k" ${currentModel === 'doubao-lite-4k' ? 'selected' : ''}>豆包 Lite 4K（轻量）</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="deepseekModelFields" class="provider-fields ${!isDoubao ? '' : 'hidden'}">
+      <div class="form-group">
+        <label class="form-label">DeepSeek 模型</label>
+        <select class="form-select" id="deepseekModelSelect">
+          <option value="deepseek-chat" ${currentModel === 'deepseek-chat' ? 'selected' : ''}>DeepSeek Chat（通用对话）</option>
+          <option value="deepseek-reasoner" ${currentModel === 'deepseek-reasoner' ? 'selected' : ''}>DeepSeek Reasoner（深度推理）</option>
+        </select>
+      </div>
+    </div>
+
+    <button class="btn btn-primary" style="width: 100%; padding: 14px; margin-top: 8px;" onclick="saveModel()">保存</button>
   `;
   document.getElementById('settingsModal').classList.add('active');
 }
 
+function switchModelProvider(provider) {
+  // 更新按钮状态
+  document.getElementById('modelProviderDoubao').classList.toggle('active', provider === 'doubao');
+  document.getElementById('modelProviderDeepseek').classList.toggle('active', provider === 'deepseek');
+  // 显示/隐藏对应字段
+  document.getElementById('doubaoModelFields').classList.toggle('hidden', provider !== 'doubao');
+  document.getElementById('deepseekModelFields').classList.toggle('hidden', provider !== 'deepseek');
+}
+
 function saveModel() {
   const settings = getSettings();
-  settings.model = document.getElementById('modelSelect').value;
+  const isDoubao = document.getElementById('modelProviderDoubao').classList.contains('active');
+  
+  if (isDoubao) {
+    settings.model = document.getElementById('doubaoModelSelect').value;
+  } else {
+    settings.deepseekModel = document.getElementById('deepseekModelSelect').value;
+  }
+  
+  // 同时保存当前选择的提供商
+  settings.aiProvider = isDoubao ? 'doubao' : 'deepseek';
+  
   saveSettings(settings);
   closeSettingsModal();
   updateSettingsDisplay();
@@ -3649,6 +3903,7 @@ function clearAllData() {
     localStorage.removeItem(`starlight_${child.id}`);
   });
   localStorage.removeItem('starlight_settings');
+  localStorage.removeItem('ai_provider');
   
   alert('数据已清除，即将刷新...');
   location.reload();
