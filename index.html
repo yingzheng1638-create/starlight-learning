@@ -2556,7 +2556,7 @@ function getSettings() {
     apiKey: '', 
     model: 'doubao-seed-1-6-flash-250828',
     deepseekApiKey: '',
-    deepseekModel: 'deepseek-chat',
+    deepseekModel: 'deepseek-flash',
     password: '123456'
   };
   // 兼容独立的 ai_provider 键（优先级高于 settings 内的值）
@@ -3467,7 +3467,7 @@ async function callDoubaoAPI(apiKey, model, systemPrompt, userMessage) {
 }
 
 async function callDeepSeekAPI(apiKey, model, systemPrompt, userMessage) {
-  const endpoint = 'https://api.deepseek.com/v1/chat/completions';
+  const endpoint = 'https://api.deepseek.com/chat/completions';
   
   const response = await fetch(endpoint, {
     method: 'POST',
@@ -3602,8 +3602,8 @@ function updateSettingsDisplay() {
     'doubao-lite-4k': '豆包 Lite 4K'
   };
   const deepseekModelNames = {
-    'deepseek-chat': 'DeepSeek Chat',
-    'deepseek-reasoner': 'DeepSeek Reasoner'
+    'deepseek-flash': 'DeepSeek Flash（快速版）',
+    'deepseek-v4-pro': 'DeepSeek V4 Pro（专业版）'
   };
   const modelNames = settings.aiProvider === 'deepseek' ? deepseekModelNames : doubaoModelNames;
   const currentModel = settings.aiProvider === 'deepseek' ? settings.deepseekModel : settings.model;
@@ -3787,8 +3787,8 @@ function showModelSettings() {
       <div class="form-group">
         <label class="form-label">DeepSeek 模型</label>
         <select class="form-select" id="deepseekModelSelect">
-          <option value="deepseek-chat" ${currentModel === 'deepseek-chat' ? 'selected' : ''}>DeepSeek Chat（通用对话）</option>
-          <option value="deepseek-reasoner" ${currentModel === 'deepseek-reasoner' ? 'selected' : ''}>DeepSeek Reasoner（深度推理）</option>
+          <option value="deepseek-flash" ${currentModel === 'deepseek-flash' ? 'selected' : ''}>DeepSeek Flash（快速版，免费额度）</option>
+          <option value="deepseek-v4-pro" ${currentModel === 'deepseek-v4-pro' ? 'selected' : ''}>DeepSeek V4 Pro（专业版，效果更好）</option>
         </select>
       </div>
     </div>
