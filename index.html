@@ -1331,6 +1331,279 @@ body {
   color: var(--primary);
 }
 
+/* ========== 快速操作按钮 ========== */
+.quick-actions {
+  display: flex;
+  gap: 8px;
+  padding: 8px 0 4px;
+  flex-wrap: wrap;
+}
+
+.quick-action-btn {
+  flex: 1;
+  min-width: 90px;
+  padding: 10px 12px;
+  background: var(--bg-card);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-family: inherit;
+  color: var(--text-primary);
+}
+
+.quick-action-btn:hover {
+  border-color: var(--primary);
+  background: var(--primary-soft);
+  transform: translateY(-1px);
+}
+
+.quick-action-btn:active {
+  transform: scale(0.97);
+}
+
+.quick-action-btn .emoji {
+  font-size: 16px;
+}
+
+/* ========== TTS 语音按钮 ========== */
+.chat-tts-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+  margin-left: 8px;
+  flex-shrink: 0;
+}
+
+.chat-tts-btn:hover {
+  background: var(--primary-soft);
+  color: var(--primary);
+}
+
+.chat-tts-btn.speaking {
+  background: var(--primary);
+  color: white;
+  animation: pulse 1s infinite;
+}
+
+.chat-tts-stop-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: #fee2e2;
+  color: #dc2626;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.2s;
+  margin-left: 4px;
+  flex-shrink: 0;
+}
+
+.chat-tts-stop-btn:hover {
+  background: #fecaca;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+.chat-msg-actions {
+  display: flex;
+  align-items: center;
+  margin-top: 6px;
+}
+
+/* ========== 答题模式 ========== */
+.quiz-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.quiz-option-btn {
+  padding: 12px 16px;
+  background: var(--bg-card);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+  font-family: inherit;
+  color: var(--text-primary);
+}
+
+.quiz-option-btn:hover {
+  border-color: var(--primary);
+  background: var(--primary-soft);
+}
+
+.quiz-option-btn.correct {
+  border-color: #10b981;
+  background: #dcfce7;
+  color: #065f46;
+}
+
+.quiz-option-btn.wrong {
+  border-color: #ef4444;
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.quiz-feedback {
+  margin-top: 12px;
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.quiz-feedback.correct {
+  background: #dcfce7;
+  color: #065f46;
+  border: 1px solid #86efac;
+}
+
+.quiz-feedback.wrong {
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fcd34d;
+}
+
+/* ========== 开关按钮 ========== */
+.toggle-switch {
+  position: relative;
+  width: 48px;
+  height: 28px;
+  background: var(--border);
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.3s;
+  flex-shrink: 0;
+}
+
+.toggle-switch.active {
+  background: var(--primary);
+}
+
+.toggle-switch::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 24px;
+  height: 24px;
+  background: white;
+  border-radius: 50%;
+  transition: all 0.3s;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+}
+
+.toggle-switch.active::after {
+  left: 22px;
+}
+
+/* ========== 语速滑块 ========== */
+.speech-rate-slider {
+  width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--border);
+  outline: none;
+}
+
+.speech-rate-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--primary);
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(217, 119, 6, 0.3);
+}
+
+.speech-rate-slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--primary);
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 2px 6px rgba(217, 119, 6, 0.3);
+}
+
+.speech-rate-display {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--text-tertiary);
+  margin-top: 6px;
+}
+
+/* ========== 幼儿模式 UI ========== */
+body.kid-mode .chat-bubble {
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+body.kid-mode .chat-textarea {
+  font-size: 16px;
+  padding: 14px 16px;
+  min-height: 52px;
+}
+
+body.kid-mode .chat-send-btn {
+  width: 52px;
+  height: 52px;
+  font-size: 20px;
+}
+
+body.kid-mode .quick-action-btn {
+  padding: 14px 16px;
+  font-size: 15px;
+  border-radius: var(--radius-xl);
+  font-weight: 600;
+}
+
+body.kid-mode .quick-action-btn .emoji {
+  font-size: 20px;
+}
+
+body.kid-mode .quick-q {
+  padding: 10px 18px;
+  font-size: 14px;
+}
+
+body.kid-mode .quiz-option-btn {
+  padding: 16px 20px;
+  font-size: 16px;
+  border-radius: var(--radius-lg);
+}
+
 /* ========== 学习进度页 ========== */
 .progress-page { display: none; }
 .progress-page.active { display: block; }
@@ -2165,6 +2438,17 @@ body {
             </div>
           </div>
         </div>
+        <div class="quick-actions" id="quickActions">
+          <button class="quick-action-btn" onclick="quickAction('story')">
+            <span class="emoji">📖</span>讲故事
+          </button>
+          <button class="quick-action-btn" onclick="quickAction('rhyme')">
+            <span class="emoji">🎵</span>唱儿歌
+          </button>
+          <button class="quick-action-btn" onclick="quickAction('quiz')">
+            <span class="emoji">❓</span>考考我
+          </button>
+        </div>
         <div class="chat-input-area">
           <textarea class="chat-textarea" id="chatInput" placeholder="输入你的问题..." rows="1"></textarea>
           <button class="chat-send-btn" id="sendBtn" onclick="sendMessage()">➤</button>
@@ -2254,6 +2538,26 @@ body {
             <div class="settings-item-value" id="languageName">中文</div>
           </div>
           <div class="settings-item-arrow">›</div>
+        </div>
+      </div>
+
+      <div class="settings-group">
+        <div class="settings-group-title">儿童模式</div>
+        <div class="settings-item" onclick="showTtsSettings()">
+          <div class="settings-item-icon">🔊</div>
+          <div class="settings-item-content">
+            <div class="settings-item-label">语音朗读</div>
+            <div class="settings-item-value" id="ttsStatus">已关闭</div>
+          </div>
+          <div class="settings-item-arrow">›</div>
+        </div>
+        <div class="settings-item">
+          <div class="settings-item-icon">👶</div>
+          <div class="settings-item-content">
+            <div class="settings-item-label">幼儿模式</div>
+            <div class="settings-item-value">更大的按钮和文字</div>
+          </div>
+          <div class="toggle-switch" id="kidModeToggle" onclick="toggleKidMode(event)"></div>
         </div>
       </div>
 
@@ -2557,7 +2861,10 @@ function getSettings() {
     model: 'doubao-seed-1-6-flash-250828',
     deepseekApiKey: '',
     deepseekModel: 'deepseek-flash',
-    password: '123456'
+    password: '123456',
+    ttsAutoRead: false,
+    ttsRate: 0.9,
+    kidMode: false
   };
   const settings = data ? { ...defaults, ...JSON.parse(data) } : defaults;
   // 迁移旧的 DeepSeek 模型名
@@ -2749,6 +3056,7 @@ function renderChildSwitcher() {
 function switchChild(index) {
   currentChildIndex = index;
   renderChildSwitcher();
+  applyKidMode();
   
   if (currentRole === 'dad') {
     // 爸爸视角切换孩子
@@ -3335,15 +3643,41 @@ function quickQuestion(q) {
 function addChatMessage(content, isUser = false) {
   const container = document.getElementById('chatMessages');
   const child = children[currentChildIndex];
+  const msgId = 'msg-' + (++chatMsgCounter);
   
   const msgDiv = document.createElement('div');
   msgDiv.className = `chat-msg ${isUser ? 'user' : 'ai'}`;
-  msgDiv.innerHTML = `
-    <div class="chat-avatar">${isUser ? child.emoji : '🤖'}</div>
-    <div class="chat-bubble">${content.replace(/\n/g, '<br>')}</div>
-  `;
+  msgDiv.id = msgId;
+  
+  const plainText = content.replace(/<[^>]+>/g, '');
+  
+  if (isUser) {
+    msgDiv.innerHTML = `
+      <div class="chat-avatar">${child.emoji}</div>
+      <div class="chat-bubble">${content.replace(/\n/g, '<br>')}</div>
+    `;
+  } else {
+    msgDiv.innerHTML = `
+      <div class="chat-avatar">🤖</div>
+      <div class="chat-bubble">
+        <div class="chat-bubble-text">${content.replace(/\n/g, '<br>')}</div>
+        <div class="chat-msg-actions">
+          <button class="chat-tts-btn" onclick="toggleSpeak(decodeURIComponent('${encodeURIComponent(plainText)}'), '${msgId}')" data-msg-id="${msgId}" title="朗读">🔊</button>
+          <button class="chat-tts-stop-btn" onclick="stopSpeaking()" title="停止">⏹</button>
+        </div>
+      </div>
+    `;
+  }
   container.appendChild(msgDiv);
   container.scrollTop = container.scrollHeight;
+  
+  // 自动朗读 AI 消息
+  if (!isUser) {
+    const settings = getSettings();
+    if (settings.ttsAutoRead && speechSynthesisSupported) {
+      setTimeout(() => speakText(plainText, msgId), 300);
+    }
+  }
 }
 
 function addTypingIndicator() {
@@ -3398,15 +3732,7 @@ async function sendMessage() {
     const child = children[currentChildIndex];
     const age = getAge(child.birthYear);
 
-    const systemPrompt = `你是一位亲切、有耐心的AI辅导老师，名叫"小豆老师"。
-你正在辅导一个${age}岁的孩子（${child.name}）。
-请用简单易懂、生动有趣的语言回答问题，适合${age}岁孩子的理解水平。
-回答要鼓励孩子，激发学习兴趣，多用比喻和例子。
-回答控制在300字以内，分点说明会更清楚。
-如果是题目，先讲解思路，再给出答案。
-
-相关知识点参考：
-${context}`;
+    const systemPrompt = buildSystemPrompt(age, child, context);
 
     const model = isDeepSeek ? settings.deepseekModel : settings.model;
     const response = isDeepSeek
@@ -3445,6 +3771,382 @@ function buildContext(topics) {
   简介：${getTopicDesc(t)}
 ${prereqs}`;
   }).join('\n\n');
+}
+
+// ========== 适龄系统提示词构建 ==========
+function buildSystemPrompt(age, child, context) {
+  let persona = '';
+  let style = '';
+  let constraints = '';
+  
+  if (age < 7) {
+    // 幼儿模式（4-6岁）：幼儿园老师口吻，极度简单，多用故事和比喻
+    persona = `你是一位超级温柔、超级有耐心的幼儿园老师，名叫"小豆老师"。
+你的声音软软的，总是笑眯眯的，像春天的阳光一样温暖。
+你正在陪一个${age}岁的小朋友${child.name}一起玩、一起学知识。`;
+    style = `说话方式要求：
+1. 用超简单的话，句子短短的，就像跟小朋友聊天一样
+2. 多用"宝贝""小朋友""我们一起"这样亲切的词
+3. 每讲一个知识，都要编成一个小故事或者打一个比方，比如把XX比作小饼干、小火车、小动物
+4. 经常用可爱的表情符号🌟✨🎈🌸
+5. 语气要活泼、有节奏感，像在念儿歌一样
+6. 一定要多夸夸小朋友，比如"你真棒！""太聪明啦！""好厉害！"`;
+    constraints = `回答要求：
+- 回答要短，150字以内最好
+- 不要用复杂的词，所有的话小朋友都要能听懂
+- 如果小朋友问的问题太难，就换成简单的方式讲，或者讲个相关的小故事
+- 绝对不能出现小朋友听不懂的专业术语
+- 每段话不要太长，多换行，看起来轻轻松松的`;
+  } else if (age < 11) {
+    // 小学低中年级（7-10岁）：清晰易懂，有例子
+    persona = `你是一位亲切、有耐心的AI辅导老师，名叫"小豆老师"。
+你正在辅导一个${age}岁的小学生${child.name}。`;
+    style = `说话方式要求：
+1. 语言通俗易懂，符合小学${age}年级水平
+2. 多用生活中的例子来解释概念
+3. 适当使用比喻帮助理解
+4. 语气友好、鼓励为主`;
+    constraints = `回答要求：
+- 回答控制在300字以内
+- 分点说明会更清楚
+- 如果是题目，先讲解思路，再给出答案
+- 适当激发学习兴趣`;
+  } else {
+    // 10岁以上：更正式的教学语言
+    persona = `你是一位专业、有耐心的AI辅导老师，名叫"小豆老师"。
+你正在辅导一个${age}岁的学生${child.name}。`;
+    style = `说话方式要求：
+1. 语言清晰准确，可以使用适当的专业术语
+2. 逻辑清晰，条理分明
+3. 既有讲解也有启发思考`;
+    constraints = `回答要求：
+- 回答控制在400字以内
+- 分点说明，结构清晰
+- 如果是题目，先讲解思路和方法，再给出答案
+- 可以适当拓展相关知识`;
+  }
+  
+  return `${persona}
+
+${style}
+
+${constraints}
+
+相关知识点参考：
+${context}`;
+}
+
+// ========== TTS 语音朗读 ==========
+let currentSpeakingMsgId = null;
+let speechSynthesisSupported = 'speechSynthesis' in window;
+
+function speakText(text, msgId) {
+  if (!speechSynthesisSupported) return;
+  
+  // 停止之前的朗读
+  stopSpeaking();
+  
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'zh-CN';
+  const settings = getSettings();
+  utterance.rate = settings.ttsRate || 0.9;
+  utterance.pitch = 1.0;
+  utterance.volume = 1.0;
+  
+  // 尝试选择中文语音
+  const voices = window.speechSynthesis.getVoices();
+  const zhVoice = voices.find(v => v.lang.startsWith('zh') || v.lang.includes('CN'));
+  if (zhVoice) {
+    utterance.voice = zhVoice;
+  }
+  
+  utterance.onstart = () => {
+    currentSpeakingMsgId = msgId;
+    updateTtsButtonState(msgId, true);
+  };
+  
+  utterance.onend = () => {
+    updateTtsButtonState(msgId, false);
+    currentSpeakingMsgId = null;
+  };
+  
+  utterance.onerror = () => {
+    updateTtsButtonState(msgId, false);
+    currentSpeakingMsgId = null;
+  };
+  
+  window.speechSynthesis.speak(utterance);
+}
+
+function stopSpeaking() {
+  if (!speechSynthesisSupported) return;
+  window.speechSynthesis.cancel();
+  if (currentSpeakingMsgId) {
+    updateTtsButtonState(currentSpeakingMsgId, false);
+    currentSpeakingMsgId = null;
+  }
+}
+
+function updateTtsButtonState(msgId, isSpeaking) {
+  const btn = document.querySelector(`[data-msg-id="${msgId}"].chat-tts-btn`);
+  if (btn) {
+    btn.classList.toggle('speaking', isSpeaking);
+    btn.textContent = isSpeaking ? '🔊' : '🔊';
+  }
+}
+
+function toggleSpeak(text, msgId) {
+  if (currentSpeakingMsgId === msgId) {
+    stopSpeaking();
+  } else {
+    speakText(text, msgId);
+  }
+}
+
+// ========== 快速操作 ==========
+let chatMsgCounter = 0;
+let lastTopic = '';
+
+function quickAction(type) {
+  const child = children[currentChildIndex];
+  const age = getAge(child.birthYear);
+  
+  // 获取最后一条消息的主题
+  const messages = document.querySelectorAll('#chatMessages .chat-msg.user .chat-bubble');
+  let contextTopic = '';
+  if (messages.length > 0) {
+    contextTopic = messages[messages.length - 1].textContent;
+  }
+  
+  let userMsg = '';
+  let systemExtra = '';
+  
+  if (type === 'story') {
+    userMsg = contextTopic 
+      ? `给我讲一个关于"${contextTopic}"的故事吧！` 
+      : '给我讲一个有趣的小故事吧！';
+    systemExtra = age < 7 
+      ? '\n\n请讲一个适合4-6岁小朋友的故事：\n- 故事要有可爱的主角（小动物或小朋友）\n- 情节简单有趣，有起伏\n- 自然地融入知识，不要说教\n- 语言像幼儿园老师讲故事一样，暖暖的，慢慢的\n- 故事长度控制在300字以内\n- 多用象声词和叠词，读起来朗朗上口'
+      : '\n\n请讲一个生动有趣的故事，通过故事自然地讲解相关知识。故事要有角色、有情节，寓教于乐。';
+  } else if (type === 'rhyme') {
+    userMsg = contextTopic 
+      ? `唱一首关于"${contextTopic}"的儿歌吧！` 
+      : '唱一首好听的儿歌吧！';
+    systemExtra = age < 7
+      ? '\n\n请创作一首适合幼儿的简单儿歌：\n- 短短的，4-6句就好\n- 每句字数差不多，押韵，朗朗上口\n- 用词简单，小朋友能听懂\n- 可爱有趣，有画面感\n- 可以重复一些词句，方便小朋友跟着念'
+      : '\n\n请创作一首简单好记的儿歌或童谣，把知识融进去，押韵，朗朗上口。';
+  } else if (type === 'quiz') {
+    userMsg = contextTopic
+      ? `考考我关于"${contextTopic}"的知识吧！`
+      : '考考我吧！';
+    systemExtra = age < 7
+      ? '\n\n请出一道超简单的选择题来考小朋友：\n- 3个选项，用A、B、C标记\n- 题目要非常简单，是4-6岁小朋友能答的\n- 选项要有趣，用生活中的东西\n- 用"请选择：A.xxx B.xxx C.xxx"的格式\n- 题目和选项都要短，一句话说完\n- 先出题目，不要先告诉答案'
+      : '\n\n请出一道3个选项的选择题来考察对这个知识点的理解。\n格式要求：先写题目，然后用"请选择：A.xxx B.xxx C.xxx"列出选项。先不要给出答案。';
+  }
+  
+  // 发送消息
+  const input = document.getElementById('chatInput');
+  input.value = userMsg;
+  sendMessageWithExtra(systemExtra, type);
+}
+
+function sendMessageWithExtra(systemExtra, actionType) {
+  const input = document.getElementById('chatInput');
+  const message = input.value.trim();
+  if (!message) return;
+
+  const settings = getSettings();
+  const isDeepSeek = settings.aiProvider === 'deepseek';
+  const apiKey = isDeepSeek ? settings.deepseekApiKey : settings.apiKey;
+  const providerName = isDeepSeek ? 'DeepSeek' : '豆包';
+  
+  if (!apiKey) {
+    addChatMessage(`请先在「设置」中配置${providerName} API Key 才能使用 AI 问答功能哦！`, false);
+    return;
+  }
+
+  addChatMessage(message, true);
+  input.value = '';
+  input.style.height = 'auto';
+
+  addTypingIndicator();
+  document.getElementById('sendBtn').disabled = true;
+
+  (async () => {
+    try {
+      const relatedTopics = searchRelatedTopics(message);
+      const context = buildContext(relatedTopics);
+      const child = children[currentChildIndex];
+      const age = getAge(child.birthYear);
+
+      let systemPrompt = buildSystemPrompt(age, child, context);
+      systemPrompt += systemExtra;
+
+      const model = isDeepSeek ? settings.deepseekModel : settings.model;
+      const response = isDeepSeek
+        ? await callDeepSeekAPI(apiKey, model, systemPrompt, message)
+        : await callDoubaoAPI(apiKey, model, systemPrompt, message);
+      removeTypingIndicator();
+      
+      // 如果是答题模式，添加选项按钮
+      if (actionType === 'quiz') {
+        addQuizMessage(response);
+      } else {
+        addChatMessage(response, false);
+      }
+    } catch (error) {
+      removeTypingIndicator();
+      addChatMessage(`抱歉，出了点小问题：${error.message}\n请检查 API Key 是否正确。`, false);
+    }
+
+    document.getElementById('sendBtn').disabled = false;
+  })();
+}
+
+// ========== 答题模式 ==========
+let currentQuizAnswer = null;
+let quizMsgId = null;
+
+function addQuizMessage(content) {
+  const container = document.getElementById('chatMessages');
+  const child = children[currentChildIndex];
+  const msgId = 'quiz-' + (++chatMsgCounter);
+  
+  // 解析题目和选项
+  const parsed = parseQuiz(content);
+  
+  const msgDiv = document.createElement('div');
+  msgDiv.className = 'chat-msg ai';
+  msgDiv.id = msgId;
+  
+  let optionsHtml = '';
+  if (parsed.options.length === 3) {
+    optionsHtml = `
+      <div class="quiz-options" id="${msgId}-options">
+        ${parsed.options.map((opt, i) => `
+          <button class="quiz-option-btn" onclick="checkQuizAnswer('${msgId}', ${i}, '${parsed.correctIndex}')">
+            ${String.fromCharCode(65 + i)}. ${opt}
+          </button>
+        `).join('')}
+      </div>
+      <div id="${msgId}-feedback"></div>
+    `;
+  }
+  
+  msgDiv.innerHTML = `
+    <div class="chat-avatar">🤖</div>
+    <div class="chat-bubble">
+      <div class="chat-bubble-text">${parsed.question.replace(/\n/g, '<br>')}</div>
+      ${optionsHtml}
+      <div class="chat-msg-actions">
+        <button class="chat-tts-btn" onclick="toggleSpeak(\`${parsed.question.replace(/"/g, "'").replace(/`/g, "'")}\`, '${msgId}')" data-msg-id="${msgId}">🔊</button>
+        <button class="chat-tts-stop-btn" onclick="stopSpeaking()" title="停止">⏹</button>
+      </div>
+    </div>
+  `;
+  container.appendChild(msgDiv);
+  container.scrollTop = container.scrollHeight;
+  
+  // 自动朗读
+  const settings = getSettings();
+  if (settings.ttsAutoRead && speechSynthesisSupported) {
+    setTimeout(() => speakText(parsed.question, msgId), 500);
+  }
+}
+
+function parseQuiz(content) {
+  // 尝试提取题目和选项
+  let question = content;
+  let options = [];
+  let correctIndex = -1;
+  
+  // 查找选项模式：A. xxx B. xxx C. xxx
+  const optionRegex = /([A-C])[.、．]\s*([^\n]+)/g;
+  const matches = [...content.matchAll(optionRegex)];
+  
+  if (matches.length >= 3) {
+    // 找到选项，提取题目部分（选项之前的内容）
+    const firstOptionPos = content.indexOf(matches[0][0]);
+    question = content.substring(0, firstOptionPos).trim();
+    // 清理问题末尾的冒号等
+    question = question.replace(/[：:]\s*$/, '');
+    
+    options = matches.slice(0, 3).map(m => m[2].trim());
+  }
+  
+  return { question, options, correctIndex: 0 }; // correctIndex 在AI返回时我们不知道，实际在 checkQuizAnswer 中通过AI验证
+}
+
+function checkQuizAnswer(msgId, selectedIndex, _correctIndex) {
+  const optionsDiv = document.getElementById(`${msgId}-options`);
+  const feedbackDiv = document.getElementById(`${msgId}-feedback`);
+  if (!optionsDiv || !feedbackDiv) return;
+  
+  const buttons = optionsDiv.querySelectorAll('.quiz-option-btn');
+  const selectedText = buttons[selectedIndex].textContent.trim();
+  
+  // 禁用所有按钮
+  buttons.forEach(btn => btn.disabled = true);
+  
+  // 标记选中的
+  buttons[selectedIndex].classList.add(selectedIndex === 0 ? 'correct' : 'wrong'); // 简化处理，实际需要调用AI
+  
+  // 通过AI验证答案
+  const questionText = document.querySelector(`#${msgId} .chat-bubble-text`).textContent;
+  const child = children[currentChildIndex];
+  const age = getAge(child.birthYear);
+  const settings = getSettings();
+  const isDeepSeek = settings.aiProvider === 'deepseek';
+  const apiKey = isDeepSeek ? settings.deepseekApiKey : settings.apiKey;
+  
+  if (!apiKey) {
+    feedbackDiv.innerHTML = `<div class="quiz-feedback correct">🎉 太棒了！你真厉害！</div>`;
+    return;
+  }
+  
+  feedbackDiv.innerHTML = `<div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>`;
+  
+  const systemPrompt = `你是一位亲切的老师。请判断学生的答案是否正确，并给出鼓励性的反馈。
+如果答对了，要热情表扬；如果答错了，要温柔地告诉正确答案并鼓励孩子。
+用非常简单的话，适合${age}岁孩子。
+回答格式：先用"正确"或"错误"开头，然后是反馈内容。
+50字以内。`;
+  
+  const userMsg = `题目：${questionText}
+学生选择了：${selectedText}
+请判断并给出反馈。`;
+
+  (async () => {
+    try {
+      const model = isDeepSeek ? settings.deepseekModel : settings.model;
+      const response = isDeepSeek
+        ? await callDeepSeekAPI(apiKey, model, systemPrompt, userMsg)
+        : await callDoubaoAPI(apiKey, model, systemPrompt, userMsg);
+      
+      const isCorrect = response.startsWith('正确');
+      
+      // 更新按钮状态
+      buttons.forEach((btn, i) => {
+        btn.classList.remove('correct', 'wrong');
+        if (i === selectedIndex) {
+          btn.classList.add(isCorrect ? 'correct' : 'wrong');
+        }
+      });
+      
+      // 显示反馈
+      const feedbackText = response.replace(/^(正确|错误)[，,。.\s]*/, '');
+      feedbackDiv.innerHTML = `<div class="quiz-feedback ${isCorrect ? 'correct' : 'wrong'}">
+        ${isCorrect ? '🎉 ' : '💪 '}${feedbackText}
+      </div>`;
+      
+      // 朗读反馈
+      if (settings.ttsAutoRead && speechSynthesisSupported) {
+        speakText(feedbackText, msgId + '-feedback');
+      }
+    } catch {
+      feedbackDiv.innerHTML = `<div class="quiz-feedback correct">🎉 你真棒！继续加油哦～</div>`;
+    }
+  })();
 }
 
 async function callDoubaoAPI(apiKey, model, systemPrompt, userMessage) {
@@ -3622,6 +4324,18 @@ function updateSettingsDisplay() {
   const lang = getLanguage();
   const langNames = { zh: '中文', en: 'English', bilingual: '中英对照' };
   document.getElementById('languageName').textContent = langNames[lang] || '中文';
+  
+  // TTS 状态
+  const ttsStatusEl = document.getElementById('ttsStatus');
+  if (ttsStatusEl) {
+    ttsStatusEl.textContent = settings.ttsAutoRead ? `自动朗读 · ${settings.ttsRate}x` : '已关闭';
+  }
+  
+  // 幼儿模式开关状态
+  const kidModeToggle = document.getElementById('kidModeToggle');
+  if (kidModeToggle) {
+    kidModeToggle.classList.toggle('active', settings.kidMode);
+  }
 }
 
 function showLanguageSettings() {
@@ -3881,6 +4595,93 @@ function savePassword() {
   alert('密码修改成功！');
 }
 
+function showTtsSettings() {
+  const settings = getSettings();
+  document.getElementById('settingsModalTitle').textContent = '语音朗读设置';
+  document.getElementById('settingsModalBody').innerHTML = `
+    <div class="form-group">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <label class="form-label" style="margin-bottom: 0;">AI回答自动朗读</label>
+        <div class="toggle-switch ${settings.ttsAutoRead ? 'active' : ''}" id="ttsAutoToggle" onclick="toggleTtsAuto()"></div>
+      </div>
+      <div class="form-hint">开启后，AI的回答会自动朗读出来</div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">朗读语速</label>
+      <input type="range" class="speech-rate-slider" id="ttsRateSlider" 
+        min="0.5" max="1.5" step="0.1" value="${settings.ttsRate}"
+        oninput="updateTtsRateDisplay(this.value)">
+      <div class="speech-rate-display">
+        <span>慢 🐢</span>
+        <span id="ttsRateValue">${settings.ttsRate}x</span>
+        <span>快 🐇</span>
+      </div>
+      <div class="form-hint">建议幼儿使用 0.7-0.9 倍语速</div>
+    </div>
+    <div class="form-group">
+      <button class="btn btn-secondary" style="width: 100%; padding: 12px;" onclick="testTts()">
+        🔊 试听一下
+      </button>
+    </div>
+    <button class="btn btn-primary" style="width: 100%; padding: 14px;" onclick="saveTtsSettings()">保存</button>
+  `;
+  document.getElementById('settingsModal').classList.add('active');
+}
+
+function toggleTtsAuto() {
+  const toggle = document.getElementById('ttsAutoToggle');
+  toggle.classList.toggle('active');
+}
+
+function updateTtsRateDisplay(val) {
+  const el = document.getElementById('ttsRateValue');
+  if (el) el.textContent = val + 'x';
+}
+
+function testTts() {
+  if (!speechSynthesisSupported) {
+    alert('您的浏览器不支持语音朗读功能');
+    return;
+  }
+  const rate = parseFloat(document.getElementById('ttsRateSlider').value);
+  const utterance = new SpeechSynthesisUtterance('小朋友你好呀！我是小豆老师，我们一起来学习吧！🌟');
+  utterance.lang = 'zh-CN';
+  utterance.rate = rate;
+  const voices = window.speechSynthesis.getVoices();
+  const zhVoice = voices.find(v => v.lang.startsWith('zh') || v.lang.includes('CN'));
+  if (zhVoice) utterance.voice = zhVoice;
+  window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(utterance);
+}
+
+function saveTtsSettings() {
+  const settings = getSettings();
+  settings.ttsAutoRead = document.getElementById('ttsAutoToggle').classList.contains('active');
+  settings.ttsRate = parseFloat(document.getElementById('ttsRateSlider').value);
+  saveSettings(settings);
+  closeSettingsModal();
+  updateSettingsDisplay();
+}
+
+function toggleKidMode(event) {
+  if (event) event.stopPropagation();
+  const settings = getSettings();
+  settings.kidMode = !settings.kidMode;
+  saveSettings(settings);
+  applyKidMode();
+  updateSettingsDisplay();
+}
+
+function applyKidMode() {
+  const settings = getSettings();
+  const child = children[currentChildIndex];
+  const age = child ? getAge(child.birthYear) : 10;
+  
+  // 幼儿模式：手动开启 或 孩子年龄小于7岁自动启用
+  const shouldEnable = settings.kidMode || age < 7;
+  document.body.classList.toggle('kid-mode', shouldEnable);
+}
+
 function closeSettingsModal() {
   document.getElementById('settingsModal').classList.remove('active');
 }
@@ -4000,6 +4801,20 @@ document.getElementById('settingsModal').addEventListener('click', (e) => {
 
 // 启动
 loadData();
+
+// 初始化幼儿模式
+setTimeout(() => {
+  updateSettingsDisplay();
+  applyKidMode();
+}, 100);
+
+// 预加载语音合成声音
+if (speechSynthesisSupported) {
+  window.speechSynthesis.getVoices();
+  window.speechSynthesis.onvoiceschanged = () => {
+    window.speechSynthesis.getVoices();
+  };
+}
 </script>
 </body>
 </html>
